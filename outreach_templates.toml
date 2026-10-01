@@ -1,0 +1,40 @@
+portfolio = "https://your-portfolio.example"
+headline = "ML engineer"
+
+[reply_post]
+use_when = "post asks for comments, replies or a portfolio"
+text = """
+Interested in the {role} opening - I'm a {headline} building in Python and LLM land: an open-source agentic harness, a multi-agent vision pipeline, and shipped fine-tuned models.
+
+Portfolio: {portfolio}
+"""
+
+[dm_recruiter]
+use_when = "post invites DMs"
+text = """
+Hi {name} - saw your {role} opening. I'm a {headline}: Python, PyTorch, RAG and agentic systems, model fine-tuning and eval, plus real systems work in C.
+
+Some things I've shipped: {proof}
+
+Portfolio and resume: {portfolio}
+
+Open to a 15-minute call this week?
+"""
+
+[dm_founder]
+use_when = "small team or stealth startup, no recruiter in the thread"
+text = """
+Hey - I build in Python/LLM land: a retrieval service with an eval set I measured, an agent harness that runs locally against open models, a vision inference service over batched images, and a from-scratch crypto implementation in C.
+
+{product_line} is the kind of problem I want to poke at.
+
+Portfolio: {portfolio}
+
+Worth 15 minutes?
+"""
+
+[follow_up]
+use_when = "no reply after a few days, sent a DM only"
+text = """
+Following up on my note about the {role} role. Happy to send anything specific - work samples, code, or a short write-up on how I'd approach it.
+"""
