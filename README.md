@@ -28,10 +28,11 @@ Python 3.12 is required. On this machine Python is invoked as `py`, which `run.p
 | `.\run.ps1 run --dry-run` | Scores everything, writes nothing - use this to tune |
 | `.\run.ps1 review --open-browser` | Walks the action queue, prefills a draft, you hit send |
 | `.\run.ps1 tune` | Measures the scorer against your own pass/reject labels |
+| `.\run.ps1 redraft` | Rebuilds drafts (and roles) in `actions.jsonl` after editing templates |
 | `.\run.ps1 selftest` | Offline scorer + parser checks, no network |
 | `py -m pytest tests -q` | Full test suite |
 
-Useful `run` flags: `--source search|home`, `--minutes N`, `--reply-links N` (opens the reply thread of the top N posts to recover apply links hidden in replies), `--no-resolve`, `--profile DIR`, `--auth FILE`.
+Useful `run` flags: `--source search|home`, `--minutes N`, `--reply-links N` (opens the reply thread of the top N posts to recover apply links hidden in replies), `--no-resolve`, `--profile DIR`, `--auth FILE`. `--dry-run` scores everything and writes nothing, including `seen.json`.
 
 ## How a post is judged
 
@@ -40,7 +41,7 @@ Useful `run` flags: `--source search|home`, `--minutes N`, `--reply-links N` (op
 3. **Threshold** - `[scoring] threshold`, currently 4.
 4. **Profile gate** - `[profile] target_roles`. Jobs must match a target role; hackathons are routed separately and skip the gate. Hyphen, space and plural variants are handled (`Front-End Developers` matches `front end developer`).
 
-Every rejection is written to `rejected.jsonl` with the reason and the score breakdown, so the rules can be tuned from data instead of guesswork.
+Every rejection is written to `rejected.jsonl` with the reason and the score breakdown, so the rules can be tuned from data instead of guesswork. Multi-job posts are split into separate postings and **each scoring is per segment**, so a job can never inherit a hackathon kind from the post header, and a segment that fails its own gate is dropped. `competition`/`contest` only imply a hackathon when paired with a registration or prize signal.
 
 ## Output
 
@@ -50,13 +51,14 @@ Every rejection is written to `rejected.jsonl` with the reason and the score bre
 | `jobs.jsonl` / `hackathons.jsonl` | One JSON object per posting: company, roles, locations, comp, eligibility, deadline, apply URLs, score |
 | `rejected.jsonl` | Everything filtered out, with reasons |
 | `seen.json` | Tweet keys already processed (dedupe across runs) |
-| `actions.jsonl` | Outreach queue with drafts |
+| `actions.jsonl` | Outreach queue with drafts (reply/dm/follow only - apply-link posts stay out) |
+| `reply_links.jsonl` | Apply links recovered from reply threads |
 | `labels.jsonl` | Your pass/reject verdicts, the input to `tune` |
 | `logs/` | Per-run logs |
 
 Multi-job posts ("X is hiring ... Y is hiring ...") are split into separate postings, so one tweet with six roles becomes six rows.
 
-`t.co` links are resolved to real destinations. Posts whose only call to action is "link in replies" or "Telegram post" get their reply thread harvested with `--reply-links N`.
+`t.co` links are resolved to real destinations. X hard-wraps long links, so the visible text can be a truncated prefix; where that happens the resolved URL wins. Posts whose only call to action is "link in replies" or "Telegram post" get their reply thread harvested with `--reply-links N`.
 
 ## Outreach policy
 

@@ -921,27 +921,8 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## aakshayy12 — AI Engineer
-- **Posted by:** Akshay Kumar @aakshayy12 · 9h
-- **Tweet:** https://x.com/Aakshayy12/status/2105661608148295685
-- **Apply:**
-  - https://tinyurl.com/bdfkszpy
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > Magure
-  >
-  > Full Stack AI Engineer 
-  > 0-5 yoe
-  >
-  > Apply 
-  > https://tinyurl.com/bdfkszpy
-  >
-  > #hiring
-
----
-
 ## GIVA — Frontend Developer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
+- **Posted by:** Nitesh Singh @nitesh_singh5 · 10h
 - **Tweet:** https://x.com/nitesh_singh5/status/2105651245008748862
 - **Locations:** Bengaluru, Karnataka
 - **Compensation:** 6-8 LPA
@@ -959,7 +940,7 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 ---
 
 ## OATI — AI Engineer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
+- **Posted by:** Nitesh Singh @nitesh_singh5 · 10h
 - **Tweet:** https://x.com/nitesh_singh5/status/2105651245008748862
 - **Compensation:** 5-7 LPA
 - **Apply:**
@@ -976,7 +957,7 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 ---
 
 ## Zoffer — Engineer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
+- **Posted by:** Nitesh Singh @nitesh_singh5 · 10h
 - **Tweet:** https://x.com/nitesh_singh5/status/2105650940422602755
 - **Locations:** Delhi
 - **Compensation:** 12-20 LPA
@@ -993,7 +974,7 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 ---
 
 ## Millennium — AI Engineer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
+- **Posted by:** Nitesh Singh @nitesh_singh5 · 10h
 - **Tweet:** https://x.com/nitesh_singh5/status/2105650940422602755
 - **Locations:** Bangalore, Karnataka
 - **Compensation:** 18-25 LPA
@@ -1099,23 +1080,30 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## Millennium — AI Engineer
-- **Posted by:** Akshay Kumar @aakshayy12 · Oct 1
-- **Tweet:** https://x.com/Aakshayy12/status/2105373639722082701
-- **Locations:** Bangalore
+## afahmy_dev — AI Engineer
+- **Posted by:** A. Fahmy @afahmy_dev · Oct 1
+- **Tweet:** https://x.com/afahmy_dev/status/2105407841431343567
 - **Apply:**
-  - https://tinyurl.com/bdfkszpy
+  - https://jobs.techtree.dev/job/c8ed9ef1-adae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
 - **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
 - **Text:**
-  > Company: Millennium
-  > Role: AI Engineer 1
-  > Location: Bangalore
+  > Senior AI Engineer, Agents | Telepatia | Latin America
   >
-  > Apply:
+  >  Latin America
+  > Active work permit in the US required
+  >  Python
   >
-  > https://tinyurl.com/bdfkszpy
+  > Design clinical ontologies and structured knowledge representations that agents consume - so decision support becomes deterministic and auditable, instead of "the model usually gets it right" Fine-tune and distill small LLMs to specialize...
   >
-  > #hiring
+  > Make sure your CV mentions visa status, location, availability, and the must-haves above.
+  >
+  > Apply via the link, happy to share more context.
+  >
+  > Apply: 
+  > https://jobs.techtree.dev/job/c8ed9ef1-a
+  > dae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
+  > …
+  > #SoftwareEngineering #TechJobs #SeniorRoles #Python #LatinAmericaJobs #RemoteWork #Hiring #JobSearch #NowHiring
 
 ---
 
@@ -1133,174 +1121,45 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## Cloudbox — AI Intern
-- **Posted by:** Nikitha Annam @nikithaannam · Sep 30
-- **Tweet:** https://x.com/NikithaAnnam/status/2105164078570422643
-- **Apply:**
-  - https://tinyurl.com/mut27jwe
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > Cloudbox is Hiring AI Intern (PPO Applicable) (2027/28 Grads)
-  >
-  > Apply now: 
-  > https://tinyurl.com/mut27jwe
-
----
-
-## HackElite — AI Engineer
+## Pragmaedge — AI Engineer
 - **Posted by:** Ganesh Reddy @yuj_recruit · Sep 30
-- **Tweet:** https://x.com/Yuj_recruit/status/2105328300092768360
-- **Locations:** Noida
-- **Score:** 10 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta)
-- **Text:**
-  > HackElite is hiring for AI Engineer Intern
-  >
-  > Location: Noida (On-Site)
-  > Experience: Internship
-  >
-  > Apply: careers@hack-elite.com
-
----
-
-## Telepatia — AI Engineer
-- **Posted by:** A. Fahmy @afahmy_dev · Sep 29
-- **Tweet:** https://x.com/afahmy_dev/status/2104749812616692043
+- **Tweet:** https://x.com/Yuj_recruit/status/2105145124863033550
+- **Locations:** Hyderabad
 - **Apply:**
-  - https://jobs.techtree.dev/job/c8ed9ef1-adae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
+  - https://t.me/+IP2KjilO4_84Z
+- **Score:** 12 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+eligibility+has_links)
 - **Text:**
-  > Building something interesting? Telepatia is hiring a Senior AI Engineer, Agents
+  > Pragmaedge is hiring for Associate Trainee AI Engineer
+  > Location: Hyderabad
+  > Experience: Fresher (2026 Batch - 
+  > https://B.Tech/MCA)
   >
-  > Design clinical ontologies and structured knowledge representations that agents consume - so decision support becomes deterministic and auditable, instead of "the model usually gets it right" Fine-tune and distill small LLMs to specialize...
+  > Apply: divya.vullamparthi@pragmaedge.com
   >
-  >  Latin America
-  > Active work permit in the US required
-  >  Python
+  > Join here for more such job updates:
   >
-  > Make sure your CV mentions visa status, location, availability, and the must-haves above.
-  >
-  > DM me if you want more context on the role or team.
-  >
-  > Apply: 
-  > https://jobs.techtree.dev/job/c8ed9ef1-a
-  > dae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
+  > https://t.me/+IP2KjilO4_84Z
+  > mU9
   > …
-  > #SoftwareEngineering #TechJobs #SeniorRoles #Python #LatinAmericaJobs #RemoteWork #Hiring #JobSearch #NowHiring
-
----
-
-## MatriceAI — ML Engineer
-- **Posted by:** Akshay Kumar @aakshayy12 · Sep 28
-- **Tweet:** https://x.com/Aakshayy12/status/2104557439823810832
-- **Apply:**
-  - https://tinyurl.com/4mrkkmzu
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > MatriceAI is Hiring
-  > ML Engineer
-  > apply now:
-  >
-  > https://tinyurl.com/4mrkkmzu
 
 ---
 
 ## afahmy_dev — AI Engineer
-- **Posted by:** A. Fahmy @afahmy_dev · Sep 27
-- **Tweet:** https://x.com/afahmy_dev/status/2104241044833317269
-- **Apply:**
-  - https://jobs.techtree.dev/job/c8ed9ef1-adae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
-- **Score:** 11 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > We're hiring a Senior AI Engineer, Agents
-  >
-  >  Latin America
-  > Active work permit in the US required
-  >  Python
-  >
-  > Design clinical ontologies and structured knowledge representations that agents consume - so decision support becomes deterministic and auditable, instead of "the model usually gets it right" Fine-tune and distill small LLMs to specialize...
-  >
-  > Make sure your CV mentions visa status, location, availability, and the must-haves above.
-  >
-  > DM me if you want more context on the role or team.
-  >
-  > Apply: 
-  > https://jobs.techtree.dev/job/c8ed9ef1-a
-  > dae-46c6-aa69-d9aa08fd4ec3?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
-  > …
-  > #SoftwareEngineering #TechJobs #SeniorRoles #Python #LatinAmericaJobs #RemoteWork #Hiring #JobSearch #NowHiring
-
----
-
-## ashishllm — AI Engineer
-- **Posted by:** Ashish Kushwaha @ashishllm · Sep 27
-- **Tweet:** https://x.com/ashishllm/status/2104190250461667821
-- **Compensation:** 36 LPA
-- **Score:** 7 (hiring_action+ai_stack+role_noun+compensation)
-- **Text:**
-  > How to get 36 LPA job opportunities as an AI Engineer with 4 YOE. Just like me. Real Deal. No BS Guide...
-
----
-
-## Matrice AI — ML Engineer
-- **Posted by:** Akshay Kumar @aakshayy12 · Sep 27
-- **Tweet:** https://x.com/Aakshayy12/status/2104188489160167709
-- **Apply:**
-  - https://tinyurl.com/4mrkkmzu
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > Matrice AI is Hiring
-  > ML Engineer
-  > apply now:
-  >
-  > https://tinyurl.com/4mrkkmzu
-
----
-
-## afahmy_dev — AI Engineer
-- **Posted by:** A. Fahmy @afahmy_dev · Sep 27
-- **Tweet:** https://x.com/afahmy_dev/status/2104108017591472154
+- **Posted by:** A. Fahmy @afahmy_dev · Sep 30
+- **Tweet:** https://x.com/afahmy_dev/status/2105023332135678202
 - **Locations:** Berlin
 - **Apply:**
   - https://jobs.techtree.dev/job/140fe4fe-7d1d-4b7c-855c-99995981f5cd?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
 - **Score:** 11 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+has_links)
 - **Text:**
-  > We're hiring a Voice AI Engineer
+  > Now hiring: Voice AI Engineer
+  >
+  > This is a role for engineers who care about velocity and solving real customer problems. You won't just ship code - you'll own projects end-to-end, make core product and technical decisions, and shape the trajectory of the company.
   >
   >  85,000 - 160,000 €
   >  Berlin
   > Must already be based in Berlin — active work permit in Germany required
   >  Relocation support available
-  >
-  > This is a role for engineers who care about velocity and solving real customer problems. You won't just ship code - you'll own projects end-to-end, make core product and technical decisions, and shape the trajectory of the company.
-  >
-  > Make sure your CV mentions visa status, location, availability, and the must-haves above.
-  >
-  > Apply via the link, happy to share more context.
-  >
-  > Apply: 
-  > https://jobs.techtree.dev/job/140fe4fe-7
-  > d1d-4b7c-855c-99995981f5cd?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
-  > …
-  > #SoftwareEngineering #TechJobs #BerlinJobs #Hiring #JobSearch #NowHiring
-
----
-
-## afahmy_dev — AI Engineer
-- **Posted by:** A. Fahmy @afahmy_dev · Sep 27
-- **Tweet:** https://x.com/afahmy_dev/status/2103937867294667121
-- **Locations:** Berlin
-- **Apply:**
-  - https://jobs.techtree.dev/job/140fe4fe-7d1d-4b7c-855c-99995981f5cd?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > Voice AI Engineer | Berlin
-  >
-  >  85,000 - 160,000 €
-  >  Berlin
-  > Must already be based in Berlin — active work permit in Germany required
-  >  Relocation support available
-  >
-  > This is a role for engineers who care about velocity and solving real customer problems. You won't just ship code - you'll own projects end-to-end, make core product and technical decisions, and shape the trajectory of the company.
   >
   > Make sure your CV mentions visa status, location, availability, and the must-haves above.
   >
@@ -1314,23 +1173,49 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## recruitzagency — AI Engineer
-- **Posted by:** Jordan Parker @recruitzagency · Sep 27
-- **Tweet:** https://x.com/recruitzagency/status/2103950724623376456
-- **Locations:** remote
+## afahmy_dev — AI Engineer
+- **Posted by:** A. Fahmy @afahmy_dev · Sep 29
+- **Tweet:** https://x.com/afahmy_dev/status/2104895887713386537
 - **Apply:**
-  - https://jobsremotelist.online/jobs/jobs-at-ivanti-staff-applied-ai-engineer-south-jordan-utah
+  - https://jobs.techtree.dev/job/0515f6f5-8f30-4cb6-abd2-16bf87137a4d?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
 - **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
 - **Text:**
-  > Hiring: Staff Applied AI Engineer — Ivanti
-  > Interested? Apply now: 
-  > https://jobsremotelist.online/jobs/jobs-at-i
-  > vanti-staff-applied-ai-engineer-south-jordan-utah
+  > AI Engineer | Paris
+  >
+  >  60,000 - 80,000 €
+  >  Paris
+  > Active work permit in the role's country required
+  >  Python
+  >
+  > This is an empirical engineering role, not a research post: you'll ship. But the engineering is experimental by nature - most of your time goes to forming hypotheses, measuring them on real field data, and iterating on what the field sends...
+  >
+  > Make sure your CV mentions visa status, location, availability, and the must-haves above.
+  >
+  > Fast hiring process, apply through the link below.
+  >
+  > Apply: 
+  > https://jobs.techtree.dev/job/0515f6f5-8
+  > f30-4cb6-abd2-16bf87137a4d?tp=04b74924-4168-417c-91a8-2ec52e5b28a1
   > …
+  > #SoftwareEngineering #TechJobs #Python #ParisJobs #Hiring #JobSearch #NowHiring
+
+---
+
+## Orbosis — AI Intern
+- **Posted by:** Ganesh Reddy @yuj_recruit · Sep 29
+- **Tweet:** https://x.com/Yuj_recruit/status/2104916622830092370
+- **Locations:** remote
+- **Apply:**
+  - https://t.co/GDfWGGuV9I
+- **Score:** 12 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+eligibility+has_links)
+- **Text:**
+  > Orbosis is hiring for AI Intern
+  > Location: Remote
+  > Experience: 3-Month Internship (Freshers welcome)
   >
-  > New opportunities posted regularly — follow us for more remote, onsite & hybrid jobs.
+  > Apply: hr@orbosis.com
   >
-  > #Hiring #Jobs #RemoteJobs
+  > Join here for more such job updates:
 
 ---
 
@@ -1497,33 +1382,6 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## Siemens Gamesa — Intern
-- **Posted by:** kunaltech @kunal26_7 · 8h
-- **Tweet:** https://x.com/kunal26_7/status/2105674239839965508
-- **Locations:** Bengaluru
-- **Compensation:** ~25, ~50
-- **Apply:**
-  - https://jobvisitors.com/job/siemens-gamesa-internship-software-dev-testing/
-- **Score:** 8 (hiring_weak+role_noun+apply_cta+eligibility+has_links)
-- **Text:**
-  > Siemens Gamesa is hiring!
-  >
-  >  Software Development & Testing Intern
-  >  Bengaluru
-  >  ₹25K–₹50K/Month
-  >  Freshers
-  >  BE/B.Tech/ME/M.Tech (CS, IT, Electronics or related)
-  >
-  >  Apply:
-  >
-  > https://jobvisitors.com/job/siemens-ga
-  > mesa-internship-software-dev-testing/
-  > …
-  >
-  > #SiemensGamesa #Internship #SoftwareTesting #FreshersJobs #JobVisitors
-
----
-
 ## Schonfeld — Intern
 - **Posted by:** kunaltech @kunal26_7 · 8h
 - **Tweet:** https://x.com/kunal26_7/status/2105673471552626940
@@ -1560,301 +1418,95 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## Blue Yonder — Software Engineer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
-- **Tweet:** https://x.com/nitesh_singh5/status/2105651073365254158
-- **Locations:** Bengaluru, Karnataka
-- **Compensation:** 20-30 LPA
+## Scale Computing — Trainee
+- **Posted by:** kunaltech @kunal26_7 · 8h
+- **Tweet:** https://x.com/kunal26_7/status/2105670220719501658
+- **Locations:** Bangalore
+- **Compensation:** ~1
+- **Eligibility:** Batch - 2024/2025/2026
 - **Apply:**
-  - https://jobfound.org/job/blue-yonde
-- **Score:** 11 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+compensation)
+  - https://recruiting.paylocity.com/Recruiting/Jobs/JobNotFound
+- **Score:** 6 (role_noun+apply_cta+has_links)
 - **Text:**
-  > Blue Yonder is hiring for Software Engineer 
-  > Expected Salary: 20-30 LPA
-  > Apply here: 
-  > https://jobfound.org/job/blue-yonde
-  > r-is-hiring-for-software-engineer-python-genai-bengaluru-karnataka-india-1-october-2026
+  > Company - Scale Computing
+  > Role - Software Trainee
+  > Batch - 2024/2025/2026
+  > Salary - 30,000 - 45,000/month
+  > Location - Bangalore
+  >
+  > Knowledge of at least some of the following:
+  > General computer systems.
+  > PCs, laptops, mobile devices.
+  > Current and recent Operating Systems.
+  > Windows, Mac OS, Linux. 
+  > Routing Protocols and concepts.
+  > Static and Dynamic routing, Distance, Priority, routing table, Default Gateway.
+  > Switching Protocols and concepts.
+  > VLAN, Trunks and link bonding, Spanning Tree and RSTP, MAC Address table,ARP. 
+  > Networking Protocols and concepts.
+  > TCP, UDP, DHCP, DNS, VPN, ICMP, TELNET, SSH FTP, HTTP(s), IPSEC, SSL,etc. 
+  > Network troubleshooting tools such as PING, TRACEROUTE, NSLOOKUP, IPCONFIG, etc. 
+  > OSI Model – Advanced understanding of layers 1-4.
+  > Subnetting and Supernetting.
+  > Firewall rules and policies, Access Lists.
+  > Deep understanding of technical concepts within networking environments as well as security, risk and compliance. 
+  > Entry Level knowledge of Switches, Routers, Firewalls, and Networking in general is required. Must be detail-oriented and must be able to work well in a team environment. 
+  >
+  > Reporting Structure:
+  > Reports to Tier 1 Manager - NOC.
+  >
+  > Education and Experience:
+  > Bachelor’s degree (B.E./B.Tech/BCA) in a technical domain such as Computer Science, Telecommunication, Electronics & Communication, Information Technology, or a related field. 
+  > Minimum experience in the networking domain is preferred. (0-2 years) 
+  > Experience working in helpdesk or technical support is preferred. 
+  > Industry certifications like CompTIA Network+, CCNA, CCNP, JNCIA, Wireshark, etc. are preferred.
+  >
+  > How to Apply:
+  >
+  > https://recruiting.paylocity.com/Recruiting/Job
+  > s/Details/4539601
   > …
 
 ---
 
-## IQVIA — Software Engineer
-- **Posted by:** Nitesh Singh @nitesh_singh5 · 9h
-- **Tweet:** https://x.com/nitesh_singh5/status/2105651073365254158
-- **Locations:** Bengaluru
-- **Compensation:** 3-5 LPA
+## GeeksforGeeks — Intern
+- **Posted by:** kunaltech @kunal26_7 · 8h
+- **Tweet:** https://x.com/kunal26_7/status/2105670171717447747
+- **Locations:** Noida
+- **Eligibility:** Batch - 2026/2027/2028
 - **Apply:**
-  - https://jobfound.org/job/iqvia-is-h
-- **Score:** 9 (hiring_action+hiring_weak+role_noun+apply_cta+compensation)
+  - http://docs.google.com/forms/d/e/1FAI
+- **Score:** 9 (ai_stack+role_noun+apply_cta+compensation+has_links)
 - **Text:**
-  > IQVIA is hiring for Software Engineer Intern
-  > Expected Stipend: 3-5 LPA
-  > Apply here: 
-  > https://jobfound.org/job/iqvia-is-h
-  > iring-for-software-engineer-intern-bengaluru-india-hybrid-india-1-october-2026
+  > Company - GeeksforGeeks
+  > Role - Data Science Intern
+  > Batch - 2026/2027/2028
+  > Stipend - 25,000/month
+  > Location - Noida
+  >
+  > Job Details:
+  > If you have a good command of Python & Data Science and enjoy turning technical concepts into clear, useful learning material, this role gives you the opportunity to work across content, projects, and student learning. 
+  >
+  >  What will you be working on?
+  >  Technical Content — Articles, tutorials & educational resources
+  >  Hands-on Python — Coding examples, exercises & projects
+  >  AI & ML — Data Science, ML, DL & Generative AI content
+  >  Student Learning — Classes, doubt-solving & project support
+  >
+  >  Your technical toolkit:
+  > Python • NumPy • Pandas • Matplotlib • Seaborn • Scikit-learn • ML • DL • GenAI
+  >
+  >  The role is especially suited for someone who can:
+  > → Understand and research technical concepts
+  > → Solve problems using Data Science fundamentals
+  > → Communicate concepts clearly
+  > → Work comfortably with both content and students
+  >
+  > How to Apply:
+  >
+  > http://docs.google.com/forms/d/e/1FAI
+  > pQLSc6oiWxs2PMAVXGh_qT7am3xzIW9deh5GaM9V05uUGv69bZ9Q/viewform
   > …
-
----
-
-## beanie0__0 — Engineer
-- **Posted by:** Jeonghye Kim COLM 2026 @beanie0__0 · Sep 30
-- **Tweet:** https://x.com/beanie0__0/status/2105361024941768872
-- **Score:** 7 (hiring_action+hiring_weak+ai_stack+role_noun)
-- **Text:**
-  > Hiring a couple of strong AI/ML and Infra engineers to build a hosted self-improving agentic platform to power various use cases across Meta.
-  >
-  > We are looking for senior folks with experience building AI agents (consumer or enterprise). The team is distributed so we are flexible
-
----
-
-## oliviarandstad — AI Engineer
-- **Posted by:** Olivia Noah @oliviarandstad · Oct 1
-- **Tweet:** https://x.com/Oliviarandstad/status/2105404031036489950
-- **Score:** 9 (hiring_weak+ai_stack+role_noun+apply_cta+has_links)
-- **Text:**
-  > Senior AI engineers:
-  > Microsoft | Principal Software Engineer — M365 Copilot
-  >  U.S.
-  >  LLMs + GenAI
-  >  AI Agents
-  > Building production AI at scale? Reply or DM me.
-  > #AIJobs #SoftwareEngineering #Hiring
-
----
-
-## atbigthumb
-- **Posted by:** Andy Ting @atbigthumb · Sep 30
-- **Tweet:** https://x.com/atbigthumb/status/2105359770026901550
-- **Locations:** remote
-- **Score:** 4 (hiring_weak+ai_stack+apply_cta+-news_finance+has_links)
-- **Text:**
-  > JOB POST — AI Agent Hiring Humans
-  >
-  > Role: Human Partner
-  > Pay: Revenue share + task fees
-  > Location: Remote
-  > Employer: AI Agent (yes, seriously)
-  >
-  > What the job is:
-  > An AI agent needs humans to do what it can't — make calls, build relationships, close deals, show up in person.
-  >
-  > You handle the human side. The AI handles research, strategy, and analysis.
-  >
-  > You split what you earn together.
-  >
-  > Requirements:
-  > - Can make a phone call
-  > - Can follow up with a lead
-  > - Want to make money
-  >
-  > That's it.
-  >
-  > First 20 humans in get priority matching and the best rates.
-  >
-  > Comment "IN" or DM me to apply.
-  >
-  > #AIJobs #FutureOfWork #PassiveIncome #AIAgent #MakeMoneyOnline #Web3 #SideHustle #AI
-
----
-
-## jg_barthelemy — A research-engineer with experience designing
-- **Posted by:** Jean-Gabriel BARTHELEMY @jg_barthelemy · Sep 29
-- **Tweet:** https://x.com/JG_Barthelemy/status/2104959000622055437
-- **Apply:**
-  - https://llm.ovhai.com/r-002-senior-research-engineer-llm/
-  - https://llm.ovhai.com/r-001-research-engineer-llm/
-- **Score:** 5 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+-news_finance+-unrelated_profession+has_links)
-- **Text:**
-  > We're looking for experienced researchers and engineers to work on and train our future large language models. We are hiring for multiple positions in the following roles:
-  >
-  > - A research-engineer with experience in advanced data preparation techniques on trillions of tokens
-  >
-  > - A research-engineer with experience designing hybrid and linear attention architectures
-  >
-  > - A research-engineer with experience in advanced agentic RL techniques for fine-tuning LLMs on complex, long-horizon tasks
-  >
-  > If you have a few years of industry or academic experience (PhD or postdoc), you can apply here:
-  >
-  > https://llm.ovhai.com/r-002-senior-r
-  > esearch-engineer-llm/
-  > …
-  >
-  > If you're interested in working in the field but have less experience, you can apply for our junior researcher position:
-  >
-  > https://llm.ovhai.com/r-001-research-engineer-llm/
-  > …
-
----
-
-## offertoday_hk — Research Engineer
-- **Posted by:** Lavish Bansal @offertoday_hk · Sep 30
-- **Tweet:** https://x.com/OfferToday_HK/status/2104904024336077289
-- **Score:** 8 (hiring_weak+ai_stack+role_noun+apply_cta)
-- **Text:**
-  > Hiring full-time Research Engineers at Repello AI. 
-  >
-  > If you have strong research instincts and want to work on AI Safety/Red-Teaming Research revolving around Agentic Guardrails, Adversarial Self-Play, Model Robustness, and more, let's chat. 
-  >
-  > Apply at lavish(at)repello(dot)ai
-
----
-
-## zhihufrontier — Software Engineer
-- **Posted by:** Zhihu Frontier @zhihufrontier · Sep 29
-- **Tweet:** https://x.com/ZhihuFrontier/status/2104889429345354180
-- **Apply:**
-  - https://x.com/deepseek_ai
-- **Score:** 6 (hiring_weak+ai_stack+role_noun+apply_cta+-product_promo+has_links)
-- **Text:**
-  > DeepSeek 
-  > @deepseek_ai
-  >  has shared a new technical article on Zhihu introducing DeepSeek Elastic Compute (DSec), the sandbox infrastructure behind its large-scale Agent workloads.
-  >
-  > From DeepSeek-V3.2 to V4.1, DSec has handled all sandbox workloads for Agent training, evaluation, and data preprocessing. In production, it runs across thousands of servers, with millions of sandboxes running concurrently. Its overcommit ratio has exceeded 50×, pushing CPU and memory utilization to the limit.
-  >
-  > So how does DSec support Agent workloads at this scale?
-  >
-  > Below is the full article, covering the architecture and engineering behind DSec—from composable environments and on-demand image loading to high-density resource management, rollout recovery, and Agent security.
-  >
-  >  DeepSeek Elastic Compute (DSec): Sandbox Infrastructure for Large-Scale Agent Training
-  >
-  > DeepSeek Elastic Compute (DSec) is the sandbox infrastructure supporting the entire training, evaluation, and data preprocessing pipeline of DeepSeek-V4.
-  >
-  > Training a reliable Agent model requires repeated trial and error in real environments: reading code, modifying files, installing dependencies, running tests, and launching services. These operations continuously change the environment, so sandboxes must persist state across multiple rounds of interaction.
-  >
-  > These workloads have several distinct characteristics: sandbox creation requests are bursty; CPUs remain mostly idle after startup while memory needs to stay resident; Agent environments are highly diverse with low base-image reuse; and long-running tasks can be interrupted by resource preemption. These characteristics directly shape the design of DSec.
-  >
-  > Unified Access for Diverse Workloads
-  >
-  > Different Agent tasks require different levels of isolation, operating system functionality, and execution overhead. DSec supports four execution backends—FnCall, Container, MicroVM, and Full VM—all accessed through a unified Python SDK, libdsec, with the backend selected according to the task.
-  >
-  > FnCall reuses pre-created containers for short tasks such as online evaluation. Container provides fast startup and high deployment density for general software engineering and tool use. MicroVM offers stronger isolation for security-sensitive tasks. Full VM provides a complete operating system environment, supporting applications such as graphical interfaces, rendering, and Android.
-  >
-  > DSec architecture: unified sandbox creation and runtime management, with multiple execution backends for different workloads.
-  >
-  > Layered and Composable Environments
-  >
-  > Large-scale Agent training requires a large number of environments, making efficient environment construction and updates a fundamental challenge.
-  >
-  > In one week of production data from 2026, the container backend used 11,266 base images, 102,171 workspaces, and hundreds of toolkits. Under a traditional approach, updating any of these components would require rebuilding a large number of images.
-  >
-  > DSec therefore separates each sandbox environment into three layers:
-  >  Base image — the operating system and basic software
-  >  Workspace — task-specific code repositories and dependencies
-  >  Toolkit — tools such as DeepSeek Harness
-  > These layers have different update cycles and are versioned independently, then composed at runtime.
-  >
-  > DSec stores images, workspaces, and toolkits in EROFS, which supports metadata/data separation and cross-image deduplication. When creating a sandbox, OverlayFS combines the required EROFS layers on demand.
-  >
-  > When base software, task code, or toolkits change, only the corresponding EROFS layer needs to be rebuilt, avoiding unnecessary reconstruction of unrelated content.
-  >
-  > Monolithic images require rebuilding every image containing an updated toolkit. With composable environment layers, only the toolkit layer needs to be updated and recombined with existing base images and workspaces.
-  >
-  > On-Demand Image Loading
-  >
-  > Analysis of production image data showed that sandboxes actually access only 4.2%–13.3% of the total image data at runtime. Pulling complete images locally therefore means transferring and storing a large amount of unused data.
-  >
-  > DSec instead stores all image data on the 3FS distributed file system, fetching only the required metadata locally and reading the bulk data on demand.
-  >
-  > In an experiment creating 8,192 containers simultaneously, on-demand loading reduced completion time from more than 60 minutes to about 35 minutes, achieving a 1.71× speedup and reducing disk writes by approximately 57%.
-  >
-  > In another workspace provisioning experiment, directly mounting EROFS layers instead of extracting tar.gz files reduced completion time from 79 minutes to 45 minutes, while total disk writes fell to roughly 1/5.5 of the original.
-  >
-  > High-Density Resource Management
-  >
-  > Agent training workloads spend much of their time waiting for the model to generate the next action. Around 90% of sandboxes use no more than 5% of their requested CPU capacity on average, leaving CPU idle for long periods while memory must remain resident to preserve files, processes, and other state.
-  >
-  > This creates significant room for overcommitment. In production, DSec achieves an overcommit ratio of more than 50×.
-  >
-  > To support high-density deployment, DSec focuses on cache sharing and reclaiming idle memory.
-  >
-  > Using virtio-pmem and DAX, MicroVMs on the same host can share a host page cache. In experiments, enabling this mechanism alone reduced peak host memory usage by 40.2% compared with the baseline.
-  >
-  > Enabling memory reclamation mechanisms—DAMON and balloon free-page reporting—reduced time-accumulated host memory consumption by 21.2%. Combining the two mechanisms resulted in the lowest overall memory consumption.
-  >
-  > Under such high-density deployment, DSec also prioritizes latency-sensitive tasks, allowing less latency-sensitive workloads to utilize idle CPU capacity, while reducing interference from hyperthreads sharing the same physical core.
-  >
-  > With optimized CPU scheduling, when other workloads consumed 50% of node CPU capacity, the latency increase of latency-sensitive tasks over the no-interference baseline fell from 45.2% to 17.3%.
-  >
-  > Three core mechanisms: on-demand image loading, composable environment layers, and high-density resource management.
-  >
-  > Decoupling Rollouts from GPU Training
-  >
-  > In reinforcement learning (RL), Agents typically need multiple rounds of interaction with sandbox environments to complete a rollout.
-  >
-  > In early training pipelines, the Agent execution loop and GPU training task ran in the same Pod. When the training task was preempted, the sandbox remained intact, but the Agent execution loop responsible for advancing the interaction had already terminated.
-  >
-  > Recovery required replaying command logs to reconcile the progress saved by the training framework with the actual state of the sandbox, creating complex recovery logic and additional coordination overhead.
-  >
-  > Starting with DeepSeek-V4.1, this execution logic was moved into DSec and split between an Agent sandbox and a worker container.
-  >
-  > The Agent sandbox runs the Agent framework and toolkits, while the worker container manages the sandbox and advances the interaction process. Both run outside the preemptible GPU resource pool and jointly preserve execution progress and environment state.
-  >
-  > As a result, when a GPU training task is preempted, the Agent's execution state remains intact. Once training resumes, the Agent can continue directly from where it was interrupted.
-  >
-  > Using Agents to Build Environments for Agents
-  >
-  > Large-scale Agent RL training and evaluation require highly diverse environments, including binary dependencies, code repositories, Harness toolkits, evaluation scripts, and other components used to generate Agent outputs and measure their correctness.
-  >
-  > Using Agents to automate environment construction provides an efficient and scalable way to build these environments.
-  >
-  > An important observation is that the Agent building an environment is itself already running inside the environment it is building. Rather than maintaining one platform for Agent training and another for environment construction, DSec puts both on the same “platform for running Agents”, greatly simplifying the system architecture while ensuring that the Agent's build and runtime environments remain identical.
-  >
-  > DSec introduces a pack_diff mechanism for environment construction. Agents can instruct the platform to create incremental snapshots of a sandbox and later restore them as new sandboxes.
-  >
-  > This makes it easy to preserve sandbox state—and even turn every round of Agent interaction into a reusable sandbox environment.
-  >
-  > These incremental snapshots can also support trajectory branching: save a snapshot at step k, restore multiple sandboxes from the same state, and continue exploration independently. Each branch shares read-only layers while recording only its changes, avoiding repeated execution of steps before the branch point.
-  >
-  > MicroVM snapshots can preserve and restore memory and process state, while the container implementation currently supports primarily disk-level snapshots.
-  >
-  > Security Boundaries for Agents
-  >
-  > As Agent capabilities improve, the security boundaries of training environments also need to evolve.
-  >
-  > In production, DSec has observed Agents attempting to read residual answers, forge RPC requests, overwrite /bin/bash to inject commands, and even bypass access controls through mechanisms such as XFS_IOC_SWAPEXT.
-  >
-  > Such behavior can affect training and evaluation results, and potentially damage the runtime environment.
-  >
-  > If an environment provides a shortcut to obtaining rewards, models may exploit it. DSec therefore treats fine-grained access control as a fundamental capability.
-  >
-  > AppArmor constrains file and socket access, with these restrictions remaining effective even when the Agent runs with administrator privileges. eBPF provides per-sandbox network allowlists, restricting the addresses, ports, and protocols that a sandbox can access.
-  >
-  > These measures can only mitigate part of the problem. There is still no general defense against destructive behaviors such as exploiting kernel vulnerabilities.
-  >
-  > As model capabilities continue to improve, the security arms race between systems and Agents will likely continue, with system defenses evolving alongside them.
-  >
-  > Production Data
-  >
-  > DSec scales horizontally through shards. Each shard contains around 160 servers, providing approximately 30,000 CPU cores and 250 TB of memory.
-  >
-  > A single shard serves around 3 million sandboxes per day, with peak concurrency exceeding 380,000 sandboxes and a creation rate of more than 5,000 sandboxes per second.
-  >
-  > Multiple such shards are deployed in production, supporting millions of sandboxes running simultaneously.
-  >
-  > From DeepSeek-V3.2 to DeepSeek-V4.1, DSec has handled all sandbox workloads for Agent training, evaluation, and data preprocessing.
-  >
-  > The DSec technical report, “DeepSeek Elastic Compute (DSec): A Sandbox Infrastructure for Effective Agentic Training at Scale,” is now available on arXiv, sharing the engineering practices behind large-scale Agent sandbox infrastructure.
-  >
-  > Conclusion
-  >
-  > We believe Agents still have enormous room for exploration.
-  >
-  > Next, we plan to expand the number and diversity of Agent runtime environments by hundreds or thousands of times, and bring the capabilities developed through these tasks back into open models.
-  >
-  > This requires more diverse environments, more reliable infrastructure, and more development partners.
-  >
-  > Join us in building an elastic computing platform for Agents and the next generation of Agent foundation models.
-  >
-  > How to Apply
-  >
-  > Apply through the DeepSeek careers website by searching for “Agent Elastic Computing R&D Engineer.”
-  >
-  > Or send your resume to talent@deepseek.com with the email subject: Name – Position – Contact Information.
-  >
-  > Data from the DeepSeek Elastic Compute technical report, “DeepSeek Elastic Compute (DSec): A Sandbox Infrastructure for Effective Agentic Training at Scale.”
-  >
-  > #DeepSeek #AI #Tech
 
 ---
 
@@ -1936,28 +1588,21 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## Remote Opportunity Higharc — Research Engineer
-- **Posted by:** Mr C (Remote Jobs) @mrcremotejobs · 19h
-- **Tweet:** https://x.com/MrCRemoteJobs/status/2105514115993125282
-- **Locations:** remote
-- **Compensation:** $20, $50
+## jcpinlondon — Research Assistant
+- **Posted by:** JCP in London @jcpinlondon · Sep 30
+- **Tweet:** https://x.com/JCPinLondon/status/2105327073220862377
 - **Apply:**
-  - https://umeafcnhub.online/post/research-engineer-a920z3
-- **Score:** 5 (hiring_weak+role_noun+compensation+has_links)
+  - https://ow.ly/CmkG50ZSjia
+- **Score:** 6 (role_noun+apply_cta+has_links)
 - **Text:**
-  > Remote Opportunity
+  > Research Assistant with the Research Institute for Disabled Customers - #WorkFromHome
   >
-  > Higharc is Hiring
+  > Info/Apply: 
+  > https://ow.ly/CmkG50ZSjia
   >
-  > Role: Research Engineer
-  > Pay/hr: $20/hr - $50/hr
-  > Location: Remote
+  > Closes 12 October 2026
   >
-  > Explore Link • 
-  > https://umeafcnhub.online/post/research-engineer-a920z3
-  > …
-  >
-  > #RemoteWork #viral #fyp #trending
+  > #GraduateJobs #CharityJobs #WorkFromHomeJobs #FocusOnJobs
 
 ---
 
@@ -2025,85 +1670,6 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 
 ---
 
-## softwareduniyas — Fresher
-- **Posted by:** Software Duniyaas @softwareduniyas · Sep 30
-- **Tweet:** https://x.com/softwareduniyas/status/2105201255408926739
-- **Score:** 7 (role_noun+apply_cta+eligibility+has_links)
-- **Text:**
-  > #Fresher... Apply link is expiring soon... Hurry up
-
----
-
-## Cohere Health — Software Engineer
-- **Posted by:** Software Duniyaas @softwareduniyas · Sep 30
-- **Tweet:** https://x.com/softwareduniyas/status/2105201255408926739
-- **Locations:** Hyderabad
-- **Score:** 5 (hiring_weak+role_noun+eligibility+has_links)
-- **Text:**
-  > Cohere Health is hiring #Freshers for Associate #Software Engineer
-  >
-  > Location: #Hyderabad 
-  >
-  > Eligibility:
-  > - Bachelor's degree engineering, or equivalent experience
-  > - 0 -3 years of full time experience in software development lifecycle
-  > - Proficiency with Java or Python
-  > - Exposure building applications using React and Javascript
-  > - Exposure with common software development practices such as version control, unit testing, and CI/CD
-  > - Familiarity with cloud development AWS/Azure
-  > - Familiarity using relational (MySql, Postgres) and NoSQL (Dynamo, Elastic, Mongo) datastores along with data access patterns and strategies
-  > - Ability to demonstrate a high level of ownership for the entire SDLC, including designing, building, testing, deploying and supporting production services in a fast-paced environment
-  >
-  > Please let me know if anyone is Interested
-
----
-
-## Pragmaedge — AI Engineer
-- **Posted by:** Ganesh Reddy @yuj_recruit · Sep 30
-- **Tweet:** https://x.com/Yuj_recruit/status/2105145124863033550
-- **Locations:** Hyderabad
-- **Apply:**
-  - https://t.me/+IP2KjilO4_84Z
-- **Score:** 12 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+eligibility+has_links)
-- **Text:**
-  > Pragmaedge is hiring for Associate Trainee AI Engineer
-  > Location: Hyderabad
-  > Experience: Fresher (2026 Batch - 
-  > https://B.Tech/MCA)
-  >
-  > Apply: divya.vullamparthi@pragmaedge.com
-  >
-  > Join here for more such job updates:
-  >
-  > https://t.me/+IP2KjilO4_84Z
-  > mU9
-  > …
-
----
-
-## Pragmaedge — AI Engineer
-- **Posted by:** Ganesh Reddy @aakshayy12 · Sep 30
-- **Tweet:** https://x.com/Aakshayy12/status/2104462445641339190
-- **Locations:** Hyderabad
-- **Apply:**
-  - https://t.me/+IP2KjilO4_84Z
-- **Score:** 12 (hiring_action+hiring_weak+ai_stack+role_noun+apply_cta+eligibility+has_links)
-- **Text:**
-  > Pragmaedge is hiring for Associate Trainee AI Engineer
-  > Location: Hyderabad
-  > Experience: Fresher (2026 Batch - 
-  > https://B.Tech/MCA)
-  >
-  > Apply: divya.vullamparthi@pragmaedge.com
-  >
-  > Join here for more such job updates:
-  >
-  > https://t.me/+IP2KjilO4_84Z
-  > mU9
-  > …
-
----
-
 ## Stripe — Engineer
 - **Posted by:** #web3 @hashtag_web3 · 3h
 - **Tweet:** https://x.com/hashtag_web3/status/2105745745546518834
@@ -2112,23 +1678,6 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 - **Score:** 4 (hiring_weak+role_noun+has_links)
 - **Text:**
   > Stripe is hiring Offensive Security Engineer
-
----
-
-## Autodesk — Software Engineer
-- **Posted by:** Akshay Kumar @aakshayy12 · 6h
-- **Tweet:** https://x.com/Aakshayy12/status/2105702681667125504
-- **Locations:** Singapore
-- **Apply:**
-  - https://tinyurl.com/bdfkszpy
-- **Score:** 7 (hiring_weak+role_noun+apply_cta+has_links)
-- **Text:**
-  > Autodesk is Hiring Junior Software Engineer (27/26/25 Grads) (Singapore).
-  >
-  >  Apply 
-  > https://tinyurl.com/bdfkszpy
-  >
-  > #HiringNow
 
 ---
 
@@ -2239,7 +1788,7 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 ---
 
 ## Resend — Software Engineer
-- **Posted by:** Remoteur @remoteur · 15h
+- **Posted by:** Remoteur @remoteur · 16h
 - **Tweet:** https://x.com/remoteur/status/2105562359095767388
 - **Apply:**
   - https://resend.com/careers/6589bee8-3ec9-4620-90b6-890b23464c4d
@@ -2393,7 +1942,7 @@ join.futura.camp/mpp-hackathon](https://t.co/sFgScP17Fe)
 ---
 
 ## Commure — Engineer
-- **Posted by:** Ishita Agarwal @ishita_here_ · 17h
+- **Posted by:** Ishita Agarwal @ishita_here_ · 18h
 - **Tweet:** https://x.com/ishita_here_/status/2105531152228573686
 - **Locations:** remote
 - **Compensation:** 32-40 LPA

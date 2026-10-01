@@ -463,8 +463,20 @@ def build_posting(text: str, links: list[tuple[str, str]], handle: str, resolve:
         else:
             posting.apply_urls.extend(dom_targets)
         posting.apply_urls = list(dict.fromkeys(posting.apply_urls))
+        if len(posting.apply_urls) > 1:
+            posting.apply_urls = [url for url in posting.apply_urls if "t.co/" not in url] or posting.apply_urls[:1]
         postings.append(posting)
     return postings
+
+
+def posting_key(entry: dict[str, Any]) -> str:
+    urls = entry.get("apply_urls") or []
+    if urls:
+        return "url:" + urls[0].rstrip("/").lower()
+    company = str(entry.get("company") or "").strip().lower()
+    role = (entry.get("roles") or [""])[0].strip().lower()
+    comp = ",".join(entry.get("comp") or []).lower()
+    return f"cr:{company}|{role}|{comp}"
 
 
 def snippet(text: str, limit: int = 180) -> str:

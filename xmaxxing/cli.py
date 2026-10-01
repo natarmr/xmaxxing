@@ -147,8 +147,12 @@ def cmd_run(args, config) -> int:
     jobs_digest = storage.MarkdownDigest(paths["jobs_md"], "Jobs from X")
     hack_digest = storage.MarkdownDigest(paths["hack_md"], "Hackathons from X")
 
-    counts = {"scanned": 0, "kept": 0, "rejected": 0, "promoted": 0, "duplicates": 0, "postings": 0}
+    counts = {"scanned": 0, "kept": 0, "rejected": 0, "promoted": 0, "duplicates": 0, "postings": 0, "collapsed": 0}
     kept_records: list[dict[str, Any]] = []
+    written_keys: set[str] = set()
+    if not args.dry_run:
+        for existing in list(storage.read_jsonl(paths["jobs_jsonl"])) + list(storage.read_jsonl(paths["hack_jsonl"])):
+            written_keys.add(extract.posting_key(existing))
 
     def on_record(record: dict[str, Any]) -> bool:
         counts["scanned"] += 1
@@ -204,13 +208,20 @@ def cmd_run(args, config) -> int:
             counts["postings"] += 1
             if segment_kind == "job":
                 record_wrote_job = True
-            if not args.dry_run:
-                if segment_kind == "hackathon":
-                    storage.append_jsonl(paths["hack_jsonl"], entry)
-                    hack_digest.append(entry)
-                else:
-                    storage.append_jsonl(paths["jobs_jsonl"], entry)
-                    jobs_digest.append(entry)
+            if args.dry_run:
+                continue
+            dedupe_key = extract.posting_key(entry)
+            if dedupe_key in written_keys:
+                counts["collapsed"] += 1
+                LOG.info("collapsed duplicate: %s %s", entry.get("company"), (entry.get("roles") or ["-"])[0])
+                continue
+            written_keys.add(dedupe_key)
+            if segment_kind == "hackathon":
+                storage.append_jsonl(paths["hack_jsonl"], entry)
+                hack_digest.append(entry)
+            else:
+                storage.append_jsonl(paths["jobs_jsonl"], entry)
+                jobs_digest.append(entry)
         if record_wrote_job:
             kept_records.append(record)
             counts["kept"] += 1
@@ -280,7 +291,7 @@ def cmd_run(args, config) -> int:
     print("\n" + "=" * 60)
     print(f"run finished in {elapsed:.1f} min (log: {log_path.name if log_path else '-'})")
     print(f"  scanned={counts['scanned']} kept={counts['kept']} postings={counts['postings']}")
-    print(f"  rejected={counts['rejected']} promoted={counts['promoted']} duplicates={counts['duplicates']}")
+    print(f"  rejected={counts['rejected']} promoted={counts['promoted']} duplicates={counts['duplicates']} collapsed={counts['collapsed']}")
     print(f"  pages={stats.get('pages')} queries={stats.get('queries')}")
     if args.dry_run:
         print("  dry run: nothing written")

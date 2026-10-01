@@ -343,6 +343,15 @@ def test_betting_and_va_spam_never_passes_any_kind() -> None:
         assert scorer.score_text(text, has_links=True).hard_reject, text
 
 
+def test_posting_key_collapses_reposts_of_the_same_job() -> None:
+    base = {"company": "MatriceAI", "roles": ["ML Engineer"], "comp": ["12-18 LPA"], "apply_urls": ["https://tinyurl.com/4mrkkmzu"]}
+    repost = {"handle": "someone_else", "company": "Matrice AI", "roles": ["ML Engineer"], "comp": [], "apply_urls": ["https://tinyurl.com/4mrkkmzu/"]}
+    assert extract.posting_key(base) == extract.posting_key(repost)
+    different = {"company": "Acme", "roles": ["ML Engineer"], "comp": [], "apply_urls": []}
+    assert extract.posting_key(different) != extract.posting_key(base)
+    assert extract.posting_key(different).startswith("cr:acme")
+
+
 def test_role_match_handles_hyphens_and_plurals() -> None:
     scorer = filters.Scorer(CONFIG)
     assert scorer.role_match("Hiring Front-End Developers") == "front end developer"
