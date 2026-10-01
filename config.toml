@@ -1,0 +1,437 @@
+[account]
+profile_dir = "x_user_data_new"
+auth_file = "auth.json"
+locale = "en-US"
+timezone = "Asia/Kolkata"
+viewport_width = 1440
+viewport_height = 900
+login_wait_seconds = 0
+
+[run]
+headless = false
+minutes = 30
+max_posts = 500
+max_pages_per_query = 5
+scroll_pause_ms = 2200
+scroll_jitter_ms = 1600
+stall_limit = 6
+block_media = true
+user_agent = ""
+
+[paths]
+jobs_markdown = "jobs_and_hackathons.md"
+hackathons_markdown = "hackathons.md"
+jobs_jsonl = "jobs.jsonl"
+hackathons_jsonl = "hackathons.jsonl"
+rejected_jsonl = "rejected.jsonl"
+seen_json = "seen.json"
+actions_jsonl = "actions.jsonl"
+labels_jsonl = "labels.jsonl"
+outreach_log = "outreach_log.jsonl"
+log_dir = "logs"
+
+[profile]
+headline = "ML engineer"
+age = 19
+portfolio = "https://your-portfolio.example"
+github = "https://github.com/your-handle"
+proof_points = [
+  "a Python retrieval service with an eval set I actually measured",
+  "a small agent harness that runs locally against open models",
+  "a FastAPI service doing vision inference over batched images",
+  "a systems project in C where I wrote the crypto primitive myself",
+]
+exclude_hackathons_from_outreach = true
+target_roles = [
+  "ai engineer",
+  "ml engineer",
+  "machine learning engineer",
+  "ai ml engineer",
+  "ai intern",
+  "ml intern",
+  "machine learning intern",
+  "ai research",
+  "research assistant",
+  "research engineer",
+  "ai agent",
+  "ai agents",
+  "agentic",
+  "llm engineer",
+  "genai",
+  "generative ai",
+  "data scientist",
+  "data engineer",
+  "mlops",
+  "deep learning",
+  "nlp engineer",
+  "computer vision",
+  "software engineer",
+  "software developer",
+  "devops engineer",
+  "site reliability engineer",
+  "qa engineer",
+  "test engineer",
+  "embedded engineer",
+  "platform engineer",
+  "android developer",
+  "ios developer",
+  "mobile developer",
+  "full stack",
+  "fullstack",
+  "backend engineer",
+  "front end developer",
+  "frontend developer",
+  "fresher",
+  "trainee",
+  "apprentice",
+  "technical writer",
+  "technical content",
+  "engineer",
+  "developer",
+  "eng.",
+  "fellow",
+]
+location_priority = ["india", "remote", "global"]
+
+[scoring]
+threshold = 4
+
+[[scoring.positive]]
+name = "hiring_action"
+weight = 2
+patterns = [
+  '\bwe(?:\W?re| are) hiring\b',
+  '\bi(?:\W?m| am) hiring\b',
+  '\bnow hiring\b',
+  '\bhiring for\b',
+  '\bexpanding (?:the|our) team\b',
+  '\bopen (?:positions|roles)\b',
+  '\bjob (?:opening|opportunity|opportunities)\b',
+  '\bwe(?:\W?re| are) looking for\b',
+  '\blooking for (?:a |an |some )?(?:passionate |cracked |rockstar |senior |junior |graduate )?(?:engineers?|developers?|interns?|researchers?)\b',
+  '\bmultiple (?:roles|openings|hires)\b',
+  '\bbatch (?:hiring|recruitment)\b',
+  '\bnow (?:accepting|open) (?:applications|applicants)\b',
+]
+
+[[scoring.positive]]
+name = "hiring_weak"
+weight = 1
+patterns = [
+  '\bhiring\b',
+  '\bwe are (?:looking|searching)\b',
+  '\bopen role\b',
+  '\bopen positions?\b',
+  '\blooking for\b',
+  '\bfounding (?:engineer|researcher|scientist|developer)\b',
+  '\bjoin (?:us|the team)\b',
+  '\bnow accepting\b',
+  '\bvacanc(?:y|ies)\b',
+]
+
+[[scoring.positive]]
+name = "ai_stack"
+weight = 2
+patterns = [
+  '(?<![\w])(?:ai|ml|llms?|rag|gpt|genai)(?![\w])',
+  '\bagentic\b',
+  '\bmachine learning\b',
+  '\bdeep learning\b',
+  '\bnlp\b',
+  '\bcomputer vision\b',
+  '\bpytorch\b',
+  '\btensorflow\b',
+  '\bnemotron\b',
+  '\bhugging ?face\b',
+  '\bembeddings?\b',
+  '\bvector (?:db|database)\b',
+  '\bfine[- ]?tun(?:e|ed|ing)\b',
+  '\bmodel (?:evaluation|eval)\b',
+]
+
+[[scoring.positive]]
+name = "role_noun"
+weight = 2
+patterns = [
+  '\bengineer(?:ing|s)?\b',
+  '\beng\.',
+  '\bdeveloper\b',
+  '\bintern(?:ship)?\b',
+  '\btrainee\b',
+  '\bapprentice\b',
+  '\bfresher\b',
+  '\bgraduate(?:s)? engineer\b',
+  '\bresearch (?:assistant|associate|scientist|engineer)\b',
+]
+
+[[scoring.positive]]
+name = "apply_cta"
+weight = 3
+patterns = [
+  '\bapply(?:ing|ies|ied)?\b',
+  '\bapplications? (?:are )?open\b',
+  '\bapply here\b',
+  '\bapply (?:now|today)\b',
+  '\bapplications? (?:close|closes|closing|deadline)\b',
+  '\bsubmit your (?:resume|cv|application)\b',
+  '\bshare your (?:resume|cv|profile|portfolio)\b',
+  '\bcomment (?:your|with)\b',
+  '\breply (?:with|to us)\b',
+  '\bdm me\b',
+  '\bdm us\b',
+  '\bmessage us\b',
+  '\bregister (?:now|here|at)\b',
+  '\bform\b',
+  '\bdeadline\b',
+  '\bregistration (?:is )?open\b',
+  '\bcheck (?:the|out) (?:telegram|replies|comments|thread)\b',
+  '\blink in (?:the )?replies\b',
+]
+
+[[scoring.positive]]
+name = "hackathon_signal"
+weight = 4
+patterns = [
+  '\bhackathons?\b',
+  '\bjam\b',
+  '\bbuildathon\b',
+  '\bdatathon\b',
+  '\bideathon\b',
+  '\bcode ?fest\b',
+  '\bcompetition\b',
+]
+
+[[scoring.positive]]
+name = "compensation"
+weight = 1
+patterns = [
+  '\blpa\b',
+  '\blakhs?\b',
+  '\bcrores?\b',
+  '\bstipend\b',
+  '\bctc\b',
+  '[$€£]\s?\d',
+  '\bper (?:month|month|hour|annum)\b',
+]
+
+[[scoring.positive]]
+name = "eligibility"
+weight = 1
+patterns = [
+  '\bgraduation year\b',
+  '\bgraduating\b',
+  '\bgraduating batch\b',
+  '\bfinal year\b',
+  '\bpre[- ]?final year\b',
+  '\bundergraduate\b',
+  '\bfreshers?\b',
+  '\bno experience (?:required|needed)\b',
+]
+
+[[scoring.negative]]
+name = "paid_promotion"
+weight = 4
+patterns = [
+  'utm_medium=paid_social',
+  'utm_source=twitter&utm_medium=paid',
+  '\bpromoted (?:post|tweet|ad)\b',
+  '\bad\b.{0,20}\bclick here\b',
+]
+
+[[scoring.negative]]
+name = "engagement_bait"
+weight = 4
+patterns = [
+  '\bcomment\s+["].*?["]\s+and\s+i(?:\W?ll|\W?m|\s+will)\s+dm\b',
+  '\bcomment\s+["].*?["]\s+to\s+get\b',
+  '\breply\s+["].*?["]\s+and\s+i(?:\W?ll|\W?m|\s+will)\s+dm\b',
+  '\bdm me the word\b',
+  '\blike and retweet\b',
+  '\bfollow and (?:dm|comment)\b',
+  '\bdrop your (?:cv|resume) (?:comment )?below for (?:a )?discount\b',
+]
+
+[[scoring.negative]]
+name = "paid_internship"
+weight = 4
+patterns = [
+  '\bpay\s+[\d,]+\s*(?:rs|inr|usd|₹)?\s*(?:/|per\s+)?\s*(?:month|to do the internship|to apply)\b',
+  '\bunpaid internship\b',
+  '\bpaid intern(?:ship)?\b',
+  '\bwork without pay\b',
+]
+
+[[scoring.negative]]
+name = "past_tense_recap"
+weight = 3
+patterns = [
+  '\bqualified for\b',
+  '\bcongrats (?:to|on)\b',
+  '\bcongratulations (?:to|on)\b',
+  '\bhuge congrats\b',
+  '\bdemo day\b',
+  '\bafter mentoring\b',
+  '\bthanks to my mentors\b',
+  '\bproject from (?:the )?\w*hackathon\b',
+  '\bmy (?:journey|experience) at\b',
+  '\bwhat i learned\b',
+  '\bfeedback (?:session|received)\b',
+  '\bwe (?:would like to )?thank\b',
+  '\bjudges? (?:said|feedback)\b',
+  '\bhackathon (?:recap|review|winners?|results?)\b',
+  '\b(?:1st|2nd|3rd|first|second|third) place\b',
+  '\bwhat does a .{0,30}look like\b',
+  '\bmeet [A-Z][a-z]+!',
+  '\bhackathon project\b',
+  '\bwe ran a competition\b',
+  '\bour project\b',
+]
+
+[[scoring.negative]]
+name = "meme_format"
+weight = 3
+patterns = [
+  '\bintern:\s',
+  '\bjuniors?:\s',
+  '\bseniors?:\s',
+  '\bboss:\s',
+  '\bmanager:\s',
+  '\bdeveloper:\s',
+  '\bme:\s.*\bmy (?:first|only)\b',
+  '\bwhen you (?:realize|realise)\b',
+  '\bhot take\b',
+]
+
+[[scoring.negative]]
+name = "news_finance"
+weight = 3
+patterns = [
+  '\bclass[- ]action\b',
+  '\bsec (?:fines|probe|charges)\b',
+  '\bgeopolitical\b',
+  '\bkremlin\b',
+  '\bputin\b',
+  '\bfunding round\b',
+  '\bseed round\b',
+  '\bseries [a-f]\b',
+  '\bvaluation\b',
+  '\bexit liquidity\b',
+  '\boption sweep\b',
+  '\bcalls? at the ask\b',
+  '\bintraday\b',
+  '\btrading competition\b',
+  '\boptions flow\b',
+  '\bstock (?:pump|dump)\b',
+  '\bpre[- ]?order\b',
+  '\bfree trial\b',
+  '\bgiveaway\b',
+  '\bhardware wallet\b',
+  '\btoken (?:farmers?|launch|omics)\b',
+  '\bnft\b',
+  '\bairdrop\b',
+  '\bweb3\b',
+  '\bprice (?:prediction|target)\b',
+]
+
+[[scoring.negative]]
+name = "product_promo"
+weight = 3
+patterns = [
+  '\bpre[- ]?launch\b',
+  '\bproduct hunt\b',
+  '\baffiliate\b',
+  '\buse code\b',
+  '\bdiscount code\b',
+  '\bblack friday\b',
+  '\bsale (?:is )?live\b',
+  '\bbuilt with\b',
+  '\bcome build with us\b',
+  '\bcontributors welcome\b',
+  '\bopen source announcement\b',
+  '\bintroducing\b',
+  '\bintroduces\b',
+  '\bwe(?:\W?ve| have) (?:just )?built\b',
+]
+
+[[scoring.negative]]
+name = "unrelated_profession"
+weight = 3
+patterns = [
+  '\bfaculty\b',
+  '\bprofessor\b',
+  '\bphd\b',
+  '\bdoctor\b',
+  '\bnurse\b',
+  '\bteaching (?:position|assistant)\b',
+  '\bgovernment job\b',
+  '\bpsc\b',
+  '\bssc (?:exam|c\b)',
+  '\barmed forces\b',
+  '\bbank po\b',
+  '\bclerk\b',
+  '\bdata entry\b',
+  '\btelecom (?:sales|customer)\b',
+  '\bbpo\b',
+  '\bsales (?:executive|representative|role)\b',
+  '\bbusiness development\b',
+  '\bmarketing (?:intern|role)\b',
+  '\bhr (?:intern|executive)\b',
+  '\brecruiter\b',
+  '\btalent acquisition\b',
+]
+
+[queries]
+enabled = true
+default_max_pages = 3
+
+[[queries.items]]
+name = "ai-ml-hiring"
+max_pages = 4
+q = '("hiring" OR "we are hiring" OR "job opening" OR "open role") ("AI engineer" OR "ML engineer" OR "machine learning" OR "AI intern" OR "ML intern") (apply OR "DM me" OR "link in replies" OR "comment") lang:en -filter:replies min_faves:2'
+
+[[queries.items]]
+name = "ai-intern-fresher"
+max_pages = 4
+q = '(internship OR intern OR trainee OR fresher OR "graduate engineer") ("AI" OR "ML" OR "agentic" OR "LLM" OR software) (hiring OR apply OR stipend) lang:en -filter:replies'
+
+[[queries.items]]
+name = "agentic-llm"
+max_pages = 3
+q = '("agentic" OR "AI agent" OR "LLM" OR "generative AI" OR "GenAI") (hiring OR intern OR "we are building" OR "join us") (apply OR "DM me" OR "link in replies") lang:en -filter:replies min_faves:2'
+
+[[queries.items]]
+name = "hackathons"
+max_pages = 3
+q = '(hackathon OR buildathon OR ideathon OR datathon) (register OR apply OR submit OR prize OR deadline OR "registration open") lang:en -filter:replies min_faves:2'
+
+[[queries.items]]
+name = "research-assistant"
+max_pages = 2
+q = '("research assistant" OR "research intern" OR "research engineer") (hiring OR apply OR "open to" OR "DM me") lang:en -filter:replies'
+
+[[queries.items]]
+name = "software-fresher-india"
+max_pages = 3
+q = '(hiring OR "we are hiring") (fresher OR "graduate engineer" OR "entry level") (Bangalore OR Hyderabad OR Delhi OR Mumbai OR Pune OR Chennai OR remote) (apply OR "DM me") lang:en -filter:replies min_faves:2'
+
+[[queries.items]]
+name = "jobboards"
+max_pages = 3
+q = '(site:jobfound.org OR site:greenhouse.io OR site:lever.co OR site:jobs.ashbyhq.com OR site:wellfound.com) (hiring OR "is hiring") (engineer OR developer OR intern) lang:en -filter:replies'
+
+[selectors]
+tweet = 'article[data-testid="tweet"]'
+tweet_text = '[data-testid="tweetText"]'
+show_more_text = '[data-testid="tweet-text-show-more-link"]'
+user_name = '[data-testid="User-Name"]'
+card_wrapper = '[data-testid="card.wrapper"]'
+quote_tweet = '[data-testid="quoteTweet"]'
+promoted = '[data-testid="placementTracking"]'
+next_button = '[data-testid="nextButton"]'
+logged_in_marker = 'a[data-testid="AppTabBar_Home_Link"], [data-testid="SideNav_AccountSwitcher_Button"], [data-testid="SideNav_NewTweetButton"], [data-testid="AppTabBar_Profile_Link"]'
+home_tab = 'a[data-testid="AppTabBar_Home_Link"]'
+show_more_replies = '[data-testid="showMoreReplies"]'
+reply_button = '[data-testid="reply"]'
+composer = '[data-testid="tweetTextarea_0"]'
+tweet_reply = 'article[data-testid="tweet"]'
+error_state = '[data-testid="errorDetail"]'
