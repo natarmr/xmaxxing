@@ -1,0 +1,34 @@
+# --- browser profiles + auth (NEVER commit: auth.json = live session cookies) ---
+x_user_data*/
+auth.json
+auth*.json
+
+# --- python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# --- personal, kept local ---
+resume.pdf
+*.pdf
+
+# --- runtime output ---
+logs/
+seen.json
+jobs.jsonl
+hackathons.jsonl
+rejected.jsonl
+actions.jsonl
+labels.jsonl
+outreach_log.jsonl
+labels_audit.json
+
+# --- editors / os ---
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
