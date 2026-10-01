@@ -68,6 +68,16 @@ LEGACY_NEGATIVE_PATTERNS: list[str] = [
     r"\badmission\s+through\b",
     r"\bdegree\s+cutoff\b",
     r"\bcgpa\b",
+    r"\bbetting\b",
+    r"\bgambling\b",
+    r"\bsportsbook\b",
+    r"\bcasino\b",
+    r"\bprediction market",
+    r"\bsports betting\b",
+    r"\bvirtual assistant\b",
+    r"\bpay\s+\d[\d,]*\s*(?:rs|inr|usd|₹)?\s+to\s+(?:do|join)\b",
+    r"\bunpaid internship\b",
+    r"\bwork without pay\b",
 ]
 
 HACKATHON_PATTERNS: list[str] = [
@@ -76,8 +86,6 @@ HACKATHON_PATTERNS: list[str] = [
     r"\bideathons?\b",
     r"\bdatathons?\b",
     r"\bcode\s?fest\b",
-    r"\bcompetitions?\b",
-    r"\bcontests?\b",
     r"\bjam\b.{0,20}\b(?:prize|register|submit)\b",
 ]
 
@@ -147,7 +155,28 @@ def _compile_all(patterns: Iterable[str]) -> list[tuple[str, re.Pattern[str]]]:
 
 
 LEGACY_NEGATIVES = _compile_all(LEGACY_NEGATIVE_PATTERNS)
+HACKATHON_WEAK_PATTERNS: list[str] = [
+    r"\bcompetitions?\b",
+    r"\bcontests?\b",
+    r"\bchallenges?\b",
+]
+
+HACKATHON_STRONG_CTA = _compile_all([
+    r"\bregister(?:s|ed|ing)?\b",
+    r"\bregistrations?\b",
+    r"\bsign ?ups?\b",
+    r"\bsubmit(?:s|ting|ted)?\b",
+    r"\bsubmissions?\b",
+    r"\bparticipat(?:e|es|ed|ing|ion|ors?)\b",
+    r"\bdeadlines?\b",
+    r"\bopens? (?:on|now)\b",
+    r"\bstarts? (?:on|from)\b",
+    r"\bspots?\b",
+    r"\bteams?\b",
+])
+
 HACKATHON_CTA = _compile_all(HACKATHON_CTA_PATTERNS)
+HACKATHON_WEAK = _compile_all(HACKATHON_WEAK_PATTERNS)
 HACKATHONS = _compile_all(HACKATHON_PATTERNS)
 JOBS = _compile_all(JOB_PATTERNS)
 INTERNSHIP = _compile_all(INTERNSHIP_TERMS)
@@ -278,6 +307,9 @@ class Scorer:
     def classify(self, text: str) -> str | None:
         for _, pattern in HACKATHONS:
             if pattern.search(text):
+                return "hackathon"
+        for _, pattern in HACKATHON_WEAK:
+            if pattern.search(text) and any(cta.search(text) for _, cta in HACKATHON_STRONG_CTA):
                 return "hackathon"
         for _, pattern in JOBS:
             if pattern.search(text):

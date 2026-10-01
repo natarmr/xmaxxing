@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -15,6 +17,11 @@ LOG = logging.getLogger("xmaxxing")
 def setup_logging(config) -> Path | None:
     log_dir = config.path_for("log_dir", "logs")
     log_dir.mkdir(parents=True, exist_ok=True)
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     log_path = log_dir / f"scrape-{stamp}.log"
     logging.basicConfig(
@@ -35,6 +42,7 @@ def _paths(config) -> dict[str, Path]:
         "rejected": config.path_for("rejected_jsonl", "rejected.jsonl"),
         "seen": config.path_for("seen_json", "seen.json"),
         "actions": config.path_for("actions_jsonl", "actions.jsonl"),
+        "reply_links": config.path_for("reply_links_jsonl", "reply_links.jsonl"),
         "labels": config.path_for("labels_jsonl", "labels.jsonl"),
         "outreach_log": config.path_for("outreach_log", "outreach_log.jsonl"),
     }
@@ -60,6 +68,7 @@ def _entry_from(record: dict[str, Any], posting, score, kind: str) -> dict[str, 
         "deadline_date": posting.deadline.get("date"),
         "expired": posting.deadline.get("expired"),
         "apply_urls": posting.apply_urls,
+        "links": [{"url": url, "label": label} for url, label in posting.links],
         "text": posting.text,
         "score": score.score,
         "signals": score.signals,
@@ -129,6 +138,9 @@ def cmd_run(args, config) -> int:
         seeded = seen.seed_from_markdown(config.path.parent / "jobs_and_hackathons.md")
         LOG.info("seeded %s keys from legacy markdown", seeded)
     LOG.info("seen store: %s keys", len(seen))
+    if args.dry_run:
+        seen = storage.SeenStore(paths["seen"])
+        seen.load()
 
     if not args.dry_run:
         paths["jobs_md"].parent.mkdir(parents=True, exist_ok=True)
@@ -169,31 +181,41 @@ def cmd_run(args, config) -> int:
         record["kind"] = kind
         record["score"] = score.score
         record["signals"] = score.signals
-        record["company"] = None
-        record["roles"] = extract.extract_roles(text)
         postings = extract.build_posting(text, record.get("links", []), record.get("handle", ""), resolve=not args.no_resolve)
         if not postings:
             postings = [extract.Posting(text=text, links=record.get("links", []))]
+        record_wrote_job = False
         for posting in postings:
+            segment_score = score
+            segment_kind = kind
+            if posting.text != text:
+                segment_score = scorer.score_text(posting.text, has_links=bool(record.get("links")))
+                segment_ok, segment_reason = scorer.verdict(segment_score)
+                if not segment_ok:
+                    LOG.info("segment dropped: %s | %s", extract.snippet(posting.text, 70), segment_reason)
+                    continue
+                segment_kind = segment_score.kind or "job"
             record["company"] = (posting.companies or [None])[0]
-            record["roles"] = posting.roles or record["roles"]
+            record["roles"] = posting.roles or record.get("roles") or []
             record["locations"] = posting.locations
             record["comp"] = posting.comp
             record["apply_urls"] = posting.apply_urls
-            entry = _entry_from(record, posting, score, kind)
+            entry = _entry_from(record, posting, segment_score, segment_kind)
             counts["postings"] += 1
+            if segment_kind == "job":
+                record_wrote_job = True
             if not args.dry_run:
-                if kind == "hackathon":
+                if segment_kind == "hackathon":
                     storage.append_jsonl(paths["hack_jsonl"], entry)
                     hack_digest.append(entry)
                 else:
                     storage.append_jsonl(paths["jobs_jsonl"], entry)
                     jobs_digest.append(entry)
-        if kind == "job":
+        if record_wrote_job:
             kept_records.append(record)
-        counts["kept"] += 1
-        LOG.info("kept [%s] score=%s %s %s", kind, score.score, record.get("handle"), extract.snippet(text, 100))
-        return True
+            counts["kept"] += 1
+            LOG.info("kept [%s] score=%s %s %s", kind, score.score, record.get("handle"), extract.snippet(text, 100))
+        return record_wrote_job
 
     profile_dir = Path(args.profile or config.get("account", "profile_dir", "x_user_data_new"))
     if not profile_dir.is_absolute():
@@ -229,18 +251,31 @@ def cmd_run(args, config) -> int:
                     LOG.warning("reply link harvest failed for %s: %s", record["key"], error)
                     continue
                 if urls:
-                    record.setdefault("reply_urls", [])
-                    record["reply_urls"] = list(dict.fromkeys(record["reply_urls"] + urls))
-                    storage.append_jsonl(paths["actions"], {**record, "reply_urls": record["reply_urls"]})
+                    storage.append_jsonl(paths["reply_links"], {
+                        "key": record["key"],
+                        "tweet_url": record["tweet_url"],
+                        "handle": record.get("handle"),
+                        "urls": urls,
+                        "at": datetime.now().isoformat(timespec="seconds"),
+                    })
+                    LOG.info("reply links for %s: %s", record["key"], len(urls))
 
         if not args.dry_run:
-            actions = outreach.build_actions(kept_records, templates, config)
+            reply_map = {
+                row["key"]: row.get("urls", [])
+                for row in storage.read_jsonl(paths["reply_links"])
+                if row.get("urls")
+            }
+            actions = outreach.build_actions(kept_records, templates, config, reply_map)
             for action in actions:
                 storage.append_jsonl(paths["actions"], action)
             LOG.info("action queue: %s (%s)", len(actions), outreach.pending_send_report(actions))
         context.close()
 
-    seen.save()
+    if args.dry_run:
+        print("  dry run: seen.json untouched")
+    else:
+        seen.save()
     elapsed = (datetime.now() - (deadline - timedelta(minutes=minutes))).total_seconds() / 60
     print("\n" + "=" * 60)
     print(f"run finished in {elapsed:.1f} min (log: {log_path.name if log_path else '-'})")
@@ -306,6 +341,33 @@ def cmd_tune(args, config) -> int:
     report = outreach.tune(scorer, labels, scorer.threshold)
     if args.threshold is not None:
         print(f"\n(current threshold {scorer.threshold} -> requested {args.threshold}; edit [scoring] threshold in config.toml)")
+    return 0
+
+
+def cmd_redraft(args, config) -> int:
+    paths = _paths(config)
+    templates = outreach.load_templates(config.path.parent / "outreach_templates.toml")
+    if not paths["actions"].exists():
+        print("No actions.jsonl yet.")
+        return 0
+    actions = list(storage.read_jsonl(paths["actions"]))
+    if not actions:
+        print("actions.jsonl is empty.")
+        return 0
+    rebuilt = []
+    for action in actions:
+        fresh = dict(action)
+        if fresh.get("text"):
+            fresh["roles"] = extract.extract_roles(fresh["text"])
+            fresh["company"] = extract.extract_company(fresh["text"], fresh.get("handle") or "")
+        fresh["draft"] = outreach.build_draft(fresh, action.get("action", "reply"), templates, config)
+        rebuilt.append(fresh)
+    temp = paths["actions"].with_suffix(".tmp")
+    with temp.open("w", encoding="utf-8") as handle:
+        for action in rebuilt:
+            handle.write(json.dumps(action, ensure_ascii=False) + "\n")
+    os.replace(temp, paths["actions"])
+    print(f"Rebuilt {len(rebuilt)} draft(s) in {paths['actions'].name}")
     return 0
 
 
@@ -379,6 +441,9 @@ def build_parser() -> argparse.ArgumentParser:
     tune = sub.add_parser("tune", help="measure the scorer against your labels")
     tune.add_argument("--threshold", type=int, default=None)
     tune.set_defaults(func=cmd_tune)
+
+    redraft = sub.add_parser("redraft", help="rebuild outreach drafts after editing templates")
+    redraft.set_defaults(func=cmd_redraft)
 
     selftest = sub.add_parser("selftest", help="offline scorer and parser checks")
     selftest.set_defaults(func=cmd_selftest)

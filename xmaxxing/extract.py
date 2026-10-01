@@ -83,8 +83,9 @@ def canonical_status_url(url: str | None) -> str | None:
 def clean_text(raw: str) -> str:
     text = raw.replace("\u2028", " ").replace("\u00a0", " ")
     text = re.sub(r"(https?://)\s*\n\s*", r"\1", text)
-    text = re.sub(r"(https?://[^\s]+)\s+(?=[\w/?#=&.\-])", r"\1", text)
+    text = re.sub(r"(https?://[^\n]*?)[ \t]+(?=[\w/?#=&.\-])", r"\1", text)
     text = re.sub(r"(https?://[^\n]*[\-/])\s*\n\s*(-?[\w.\-])", r"\1\2", text)
+    text = re.sub(r"(https?://[^\n]*?)\n([-/?#.&=~_+%][^\s]*)", r"\1\2", text)
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"\s+([,.;:!?])", r"\1", text)
@@ -122,6 +123,9 @@ def dedupe_links(links: Iterable[tuple[str, str]]) -> list[tuple[str, str]]:
             continue
         seen.add(stripped)
         label_text = re.sub(r"\s+", " ", label or "").strip()
+        if LINK_LABEL.match(label_text):
+            label_text = re.sub(r"\s+", "", label_text)
+            label_text = TRAILING_JUNK.sub("", label_text)
         if label_text in {"", "link", "link preview"} or label_text in {href, absolute, stripped}:
             label_text = ""
         out.append((stripped, label_text))
@@ -150,6 +154,9 @@ def looks_like_apply_url(url: str) -> bool:
 _RESOLVED: dict[str, str | None] = {}
 
 
+LINK_LABEL = re.compile(r"^https?://", re.IGNORECASE)
+
+
 def resolve_short_url(url: str, timeout: float = 6.0) -> str | None:
     if "t.co/" not in url:
         return url
@@ -158,7 +165,7 @@ def resolve_short_url(url: str, timeout: float = 6.0) -> str | None:
     request = urllib.request.Request(
         url,
         method="HEAD",
-        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/153 Safari/537.36"},
+        headers={"User-Agent": "Mozilla/5.0 (compatible; xmaxxing-link-resolver/0.1)"},
     )
     resolved: str | None = None
     try:
@@ -271,21 +278,55 @@ def parse_eligibility(text: str) -> dict[str, Any]:
     return {"raw": raw, "years": years, "tagged": raw is not None}
 
 
+COMPANY_STOPWORDS = {
+    "i", "we", "they", "it", "this", "that", "the", "a", "an", "and", "or", "but",
+    "are", "is", "am", "was", "who", "what", "when", "where", "our", "your", "my",
+    "their", "his", "her", "its", "there", "here", "also", "now", "just", "still",
+    "one", "two", "few", "some", "many", "new", "all", "any", "no", "yes", "hi",
+    "hello", "hey", "everyone", "anyone", "someone", "nobody", "people", "team",
+    "agent", "agents", "engineer", "engineers", "developer", "developers", "intern",
+    "interns", "role", "roles", "graduates", "fresher", "fresherS",
+}
+
+
 def extract_company(segment: str, handle: str) -> str | None:
     patterns = [
         r"^\s*([A-Z][\w&.\-]*(?:\s+[A-Z][\w&.\-]*){0,3})\s+is\s+(?:hiring|looking)\b",
         r"\b([A-Z][\w&.\-]{1,}(?:\s+[A-Z][\w&.\-]{1,})?)\s+is\s+(?:hiring|looking)\b",
         r"\bat\s+@([A-Za-z0-9_]+)",
-        r"\b([A-Z][\w&.\-]{2,})\s+(?:is\s+)?hiring\b",
+        r"\b([A-Z][\w&.\-]{2,})\s+is\s+hiring\b",
         r"\bcompany\s*[:\-]\s*([A-Z][\w&.\- ]{1,30})",
+        r"\bbrand\s*[:\-]\s*([A-Z][\w&.\- ]{1,30})",
+        r"\borgani[sz]ation\s*[:\-]\s*([A-Z][\w&.\- ]{1,30})",
     ]
     for pattern in patterns:
-        match = re.search(pattern, segment)
-        if match:
-            candidate = re.sub(r"\s+", " ", match.group(1)).strip()
-            if candidate and candidate.lower() not in {"i", "we", "they", "it"}:
-                return candidate
+        match = re.search(pattern, segment, re.IGNORECASE)
+        if not match:
+            continue
+        candidate = re.sub(r"\s+", " ", match.group(1)).strip(" -:")
+        words = candidate.lower().split()
+        if not candidate or len(words) > 4:
+            continue
+        if all(word in COMPANY_STOPWORDS for word in words):
+            continue
+        if words[-1] in COMPANY_STOPWORDS and len(words) > 1:
+            candidate = " ".join(words[:-1])
+        return candidate
     return handle or None
+
+
+ACRONYMS = {
+    "ai": "AI", "ml": "ML", "llm": "LLM", "llms": "LLMs", "nlp": "NLP", "nda": "NDA",
+    "cv": "CV", "qa": "QA", "sre": "SRE", "sde": "SDE", "hr": "HR", "api": "API",
+    "apis": "APIs", "gpu": "GPU", "gpus": "GPUs", "js": "JS", "ts": "TS", "ui": "UI",
+    "ux": "UX", "pm": "PM", "db": "DB", "dba": "DBA", "seo": "SEO", "ios": "iOS",
+    "android": "Android", "genai": "GenAI", "mlops": "MLOps", "devops": "DevOps",
+    "fullstack": "FullStack", "deepseek": "DeepSeek", "rag": "RAG",
+}
+
+
+def titleize(role: str) -> str:
+    return " ".join(ACRONYMS.get(word, word.capitalize()) for word in role.split())
 
 
 def extract_roles(segment: str) -> list[str]:
@@ -293,7 +334,7 @@ def extract_roles(segment: str) -> list[str]:
     hits: list[str] = []
     for role in ROLE_WORDS:
         if role in lowered:
-            pretty = " ".join(word.capitalize() if word.islower() else word for word in role.split())
+            pretty = titleize(role)
             if pretty not in hits:
                 hits.append(pretty)
     bullets = re.findall(r"(?:^|\n)\s*[•\-*▪]\s*([A-Za-z][\w/ +#.\-]{2,45})", segment)
@@ -349,11 +390,60 @@ class Posting:
         }
 
 
+VALID_URL = re.compile(r"^https?://[a-z0-9-]+(\.[a-z0-9-]+)+(?:/|\?)")
+TRAILING_JUNK = re.compile(r"[\s…\.。、,]+$")
+
+
+def best_target(url: str, label: str = "", resolve: bool = True) -> str | None:
+    if is_internal_link(url):
+        return None
+    candidates: list[str] = []
+    if "t.co/" in url:
+        if resolve:
+            resolved = resolve_short_url(url)
+            if resolved:
+                candidates.append(resolved)
+        candidates.append(url)
+    else:
+        candidates.append(url)
+    if label and LINK_LABEL.match(label.strip()):
+        candidates.append(re.sub(r"\s+", "", label.strip()))
+    for candidate in candidates:
+        if not candidate or is_internal_link(candidate):
+            continue
+        cleaned = re.sub(r"[?&](?:%s)=[^&\s]*" % "|".join(TRACKING_PARAMS), "", candidate)
+        if VALID_URL.match(TRAILING_JUNK.sub("", cleaned)):
+            return TRAILING_JUNK.sub("", cleaned)
+    return None
+
+
+TEXT_URL = re.compile(r"https?://[^\s]+")
+
+
+def align_urls(text_urls: list[str], dom_targets: list[str], fallback_index: int | None = None) -> list[str]:
+    aligned: list[str] = []
+    for text_url in text_urls:
+        match = next(
+            (target for target in dom_targets if target.startswith(text_url) or text_url.startswith(target)),
+            None,
+        )
+        aligned.append(match or text_url)
+    if not aligned and fallback_index is not None and 0 <= fallback_index < len(dom_targets):
+        aligned = [dom_targets[fallback_index]]
+    return aligned
+
+
 def build_posting(text: str, links: list[tuple[str, str]], handle: str, resolve: bool = True) -> list[Posting]:
     cleaned = clean_text(text)
     segments = split_multi_jobs(cleaned)
+    dom_targets: list[str] = []
+    for url, label in links:
+        target = best_target(url, label, resolve=resolve)
+        if target and target not in dom_targets:
+            dom_targets.append(target)
     postings: list[Posting] = []
-    for segment in segments:
+    multi = len(segments) > 1
+    for index, segment in enumerate(segments):
         posting = Posting(text=segment, links=list(links))
         posting.companies = [company for company in [extract_company(segment, handle)] if company]
         posting.roles = extract_roles(segment)
@@ -361,16 +451,17 @@ def build_posting(text: str, links: list[tuple[str, str]], handle: str, resolve:
         posting.comp = parse_compensation(segment)
         posting.eligibility = parse_eligibility(segment)
         posting.deadline = parse_deadline(segment)
-        for url, _label in links:
-            if is_internal_link(url):
-                continue
-            resolved = resolve_short_url(url) if resolve else url
-            if not resolved:
-                continue
-            resolved = re.sub(r"[?&](?:%s)=[^&\s]*" % "|".join(TRACKING_PARAMS), "", resolved)
-            if is_internal_link(resolved):
-                continue
-            posting.apply_urls.append(resolved)
+        local_urls = []
+        for raw in TEXT_URL.findall(segment):
+            target = best_target(raw, "", resolve=False)
+            if target:
+                local_urls.append(target)
+        if local_urls:
+            posting.apply_urls.extend(align_urls(local_urls, dom_targets, index if multi else None))
+        elif multi:
+            posting.apply_urls.extend(align_urls([], dom_targets, index))
+        else:
+            posting.apply_urls.extend(dom_targets)
         posting.apply_urls = list(dict.fromkeys(posting.apply_urls))
         postings.append(posting)
     return postings

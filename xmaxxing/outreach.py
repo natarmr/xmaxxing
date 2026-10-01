@@ -11,7 +11,7 @@ from typing import Any
 
 from .browser import open_page, sleep_jitter
 from .dom import harvest_all
-from .extract import looks_like_apply_url, resolve_short_url, snippet
+from .extract import best_target, looks_like_apply_url, snippet
 from .storage import append_jsonl, read_jsonl
 
 TEMPLATE_KEYS = ("reply_post", "dm_recruiter", "dm_founder", "follow_up")
@@ -52,8 +52,9 @@ def decide_action(record: dict[str, Any], config) -> tuple[str, str]:
     if profile.get("exclude_hackathons_from_outreach", True) and record.get("kind") == "hackathon":
         return "none", "hackathons_excluded"
     text = record.get("text", "")
-    if record.get("apply_urls"):
-        has_real_link = any(looks_like_apply_url(url) for url in record["apply_urls"])
+    candidates = list(record.get("apply_urls") or []) + list(record.get("reply_urls") or [])
+    if candidates:
+        has_real_link = any(looks_like_apply_url(url) for url in candidates)
         if has_real_link:
             return "apply", "real_apply_link_exists"
     if DM_INVITE.search(text):
@@ -81,10 +82,12 @@ def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], 
             break
     key = "dm_recruiter" if action == "dm" else "reply_post"
     template = templates.get(key, {}).get("text", "")
+    author = (record.get("handle") or "").lstrip("@")
     mapping = {
         "role": role,
         "company": company,
-        "name": record.get("display_name", "").split()[0] if record.get("display_name") else "there",
+        "name": author or record.get("display_name", "").split()[0] if record.get("display_name") else "there",
+        "author": f"@{author}" if author else "there",
         "their_requirement": requirement,
         "product_line": requirement or company,
         "proof": pick_proof(profile.get("proof_points", []), record.get("key", "")),
@@ -94,12 +97,14 @@ def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], 
     return fill(template, mapping)
 
 
-def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], config) -> list[dict[str, Any]]:
+def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], config, reply_map: dict[str, list[str]] | None = None) -> list[dict[str, Any]]:
+    reply_map = reply_map or {}
     actions: list[dict[str, Any]] = []
     for record in records:
         action, reason = decide_action(record, config)
-        if action == "none":
+        if action in {"none", "apply"}:
             continue
+        reply_urls = reply_map.get(record.get("key", ""), [])
         entry = {
             "key": record.get("key"),
             "tweet_url": record.get("tweet_url"),
@@ -113,6 +118,7 @@ def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], conf
             "locations": record.get("locations"),
             "comp": record.get("comp"),
             "apply_urls": record.get("apply_urls"),
+            "reply_urls": reply_urls,
             "text": record.get("text"),
             "action": action,
             "action_reason": reason,
@@ -142,8 +148,8 @@ def harvest_reply_links(page, tweet_url: str, config, selectors: dict[str, str],
                 break
     found: list[str] = []
     for record in harvest_all(page, selectors, expand=False):
-        for url, _label in record.get("links", []):
-            resolved = resolve_short_url(url)
+        for url, label in record.get("links", []):
+            resolved = best_target(url, label)
             if not resolved or "t.co/" in resolved:
                 continue
             if "x.com/" in resolved or "twitter.com/" in resolved:
@@ -189,8 +195,10 @@ def review(actions: list[dict[str, Any]], labels_path: Path, log_path: Path, bro
         print(f"[{index}/{len(actions)}] {title}   action={action['action']} ({action['action_reason']})  score={action.get('score')}")
         print(f"  {action.get('tweet_url')}")
         print(f"  {snippet(action.get('text', ''), 300)}")
-        for url in action.get("apply_urls") or []:
+        for url in (action.get("apply_urls") or []):
             print(f"  apply: {url}")
+        for url in (action.get("reply_urls") or []):
+            print(f"  from replies: {url}")
         if action.get("draft"):
             print("  draft:")
             for line in action["draft"].strip().splitlines():

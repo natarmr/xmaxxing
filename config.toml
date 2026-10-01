@@ -26,6 +26,7 @@ hackathons_jsonl = "hackathons.jsonl"
 rejected_jsonl = "rejected.jsonl"
 seen_json = "seen.json"
 actions_jsonl = "actions.jsonl"
+reply_links_jsonl = "reply_links.jsonl"
 labels_jsonl = "labels.jsonl"
 outreach_log = "outreach_log.jsonl"
 log_dir = "logs"
@@ -52,6 +53,8 @@ target_roles = [
   "machine learning intern",
   "ai research",
   "research assistant",
+  "research associate",
+  "ra",
   "research engineer",
   "ai agent",
   "ai agents",
@@ -368,6 +371,25 @@ patterns = [
   '\bintroducing\b',
   '\bintroduces\b',
   '\bwe(?:\W?ve| have) (?:just )?built\b',
+]
+
+[[scoring.negative]]
+name = "gambling_spam"
+weight = 4
+patterns = [
+  '\bbetting\b',
+  '\bgambling\b',
+  '\bcasino\b',
+  '\bsportsbook\b',
+  '\bwager(?:s|ing)?\b',
+  '\bodds\b',
+  '\bprediction market',
+  '\bfree (?:bet|play)\b',
+  '\bdeposit\b.{0,20}\bbonus\b',
+  '\bvirtual assistant\b',
+  '\bwork from home immediately\b',
+  '\bno experience (?:needed|required)\b.{0,40}\b(?:earn|make)\b',
+  '\b(?:₦|\$)\s?\d[\d,]*\s*(?:/|per\s+)\s*(?:month|day)\b.{0,60}\b(?:support|assistant|sales)\b',
 ]
 
 [[scoring.negative]]

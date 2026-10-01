@@ -243,6 +243,106 @@ def test_relative_hrefs_from_the_dom_are_accepted() -> None:
     assert extract.absolutize("/i/bookmarks") == "https://x.com/i/bookmarks"
 
 
+def test_company_extraction_handles_labelled_fields() -> None:
+    assert extract.extract_company("Company: RiNVENT CoE\nRole: Fresher Assistant", "aakshayy12") == "RiNVENT CoE"
+    assert extract.extract_company("Flex is hiring for Associate Software Engineer", "nitesh_singh5") == "Flex"
+    assert extract.extract_company("Acme is hiring AI engineers", "poster") == "Acme"
+    assert extract.extract_company("We are hiring interns at @acmehq", "poster") == "acmehq"
+    assert extract.extract_company("nothing useful here", "fallback") == "fallback"
+
+
+def test_apply_url_resolution_beats_the_href() -> None:
+    links = [("https://t.co/abc123", "https://jobfound.org/job/flex-is-hiring")]
+    unresolved = extract.build_posting("Flex is hiring for Associate Software Engineer", links, "n", resolve=False)[0]
+    assert unresolved.apply_urls == ["https://t.co/abc123"], unresolved.apply_urls
+    direct = extract.build_posting(
+        "Flex is hiring for Associate Software Engineer",
+        [("https://jobfound.org/job/flex", "")],
+        "n",
+        resolve=False,
+    )[0]
+    assert direct.apply_urls == ["https://jobfound.org/job/flex"], direct.apply_urls
+    resolved = extract.build_posting("Flex is hiring", [("https://t.co/plain", "")], "n", resolve=False)[0]
+    assert resolved.apply_urls == ["https://t.co/plain"], resolved.apply_urls
+
+
+def test_multi_job_posts_get_their_own_apply_link() -> None:
+    text = (
+        "Weekday is hiring for Forward Deployment Engineer\nExpected Salary: 8-14 LPA\nApply here:\n"
+        "https://jobfound.org/job/weekday-forward-deployment\n\n"
+        "Poshmark is hiring for Machine Learning Engineer\nExpected Salary: 20-30 LPA\nApply here:\n"
+        "https://jobfound.org/job/poshmark-ml-engineer"
+    )
+    postings = extract.build_posting(text, [], "aggregator", resolve=False)
+    assert len(postings) == 2
+    assert postings[0].companies == ["Weekday"], postings[0].companies
+    assert postings[1].companies == ["Poshmark"], postings[1].companies
+    assert postings[0].apply_urls == ["https://jobfound.org/job/weekday-forward-deployment"], postings[0].apply_urls
+    assert postings[1].apply_urls == ["https://jobfound.org/job/poshmark-ml-engineer"], postings[1].apply_urls
+    assert postings[0].comp == ["8-14 LPA"] and postings[1].comp == ["20-30 LPA"]
+
+
+def test_url_shape_validation_rejects_junk() -> None:
+    assert extract.best_target("http://B.Tech/MCA", "", resolve=False) is None
+    assert extract.best_target("https://x.com/a/status/1", "", resolve=False) is None
+    assert extract.best_target("https://t.co/x", "https://jobfound.org/job/a", resolve=False) == "https://t.co/x"
+    assert extract.best_target("https://t.co/x", "https://jobfound.org/job/a …", resolve=False) == "https://t.co/x"
+    assert extract.best_target("https://jobfound.org/job/flex", "", resolve=False) == "https://jobfound.org/job/flex"
+    assert extract.best_target("https://t.co/x", "http://B.Tech/MCA", resolve=False) == "https://t.co/x"
+
+
+def test_wrapped_link_text_is_rejoined() -> None:
+    wrapped = ("https://jobslinking.com/ehs-officer-hc", "bs/", "…")
+    links = extract.dedupe_links([("https://t.co/jhg8Q7z04b", "\n".join(wrapped))])
+    assert links[0][1] == "https://jobslinking.com/ehs-officer-hcbs/", links[0][1]
+    posting = extract.build_posting(
+        "HCBS is hiring\nApply: https://jobslinking.com/ehs-officer-hcbs/",
+        [("https://jobslinking.com/ehs-officer-hcbs/", "")],
+        "n",
+        resolve=False,
+    )[0]
+    assert posting.apply_urls == ["https://jobslinking.com/ehs-officer-hcbs/"], posting.apply_urls
+
+
+def test_competitions_alone_are_not_hackathons() -> None:
+    scorer = filters.Scorer(CONFIG)
+    job = "Schonfeld is hiring a Quantitative Developer Intern. Batch 2027/2028. Stipend 6-8 Lakh/month. Location Hong Kong."
+    assert scorer.classify(job) != "hackathon"
+    assert scorer.classify("Registration is open for the ISRO hackathon 2026") == "hackathon"
+
+
+def test_truncated_text_urls_are_replaced_by_the_resolved_dom_url() -> None:
+    text = (
+        "GIVA is hiring for Frontend Developer\nExpected Salary: 6-8 LPA\nApply here:\n"
+        "https://jobfound.org/job/giva-is-hi\n\n"
+        "OATI is hiring for AI Engineer\nExpected Salary: 5-7 LPA\nApply here:\n"
+        "https://jobfound.org/job/oati-is-hi"
+    )
+    dom = [
+        ("https://t.co/aaa", ""),
+        ("https://t.co/bbb", ""),
+    ]
+    extract._RESOLVED["https://t.co/aaa"] = "https://jobfound.org/job/giva-is-hiring-for-frontend-developer-bengaluru"
+    extract._RESOLVED["https://t.co/bbb"] = "https://jobfound.org/job/oati-is-hiring-for-ai-engineer-mohali"
+    try:
+        postings = extract.build_posting(text, dom, "aggregator", resolve=True)
+    finally:
+        extract._RESOLVED.pop("https://t.co/aaa", None)
+        extract._RESOLVED.pop("https://t.co/bbb", None)
+    assert postings[0].apply_urls == ["https://jobfound.org/job/giva-is-hiring-for-frontend-developer-bengaluru"], postings[0].apply_urls
+    assert postings[1].apply_urls == ["https://jobfound.org/job/oati-is-hiring-for-ai-engineer-mohali"], postings[1].apply_urls
+
+
+def test_betting_and_va_spam_never_passes_any_kind() -> None:
+    scorer = filters.Scorer(CONFIG)
+    spam = [
+        "Most betting platforms compete on the same things: More markets. More odds. More promotions. Enter our contest for a chance to win prizes!",
+        "REMOTE: CUSTOMER SUPPORT, SALES & VIRTUAL ASSISTANT N300,000/month. No experience needed, work from home immediately.",
+    ]
+    for text in spam:
+        assert scorer.score_text(text, has_links=True).hard_reject, text
+
+
 def test_role_match_handles_hyphens_and_plurals() -> None:
     scorer = filters.Scorer(CONFIG)
     assert scorer.role_match("Hiring Front-End Developers") == "front end developer"
