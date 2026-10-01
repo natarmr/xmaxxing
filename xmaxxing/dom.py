@@ -10,6 +10,9 @@ class Article(dict):
     pass
 
 
+_REPORTED = 0
+
+
 def _text_of(locator) -> str:
     try:
         return locator.first.inner_text(timeout=3000)
@@ -170,7 +173,11 @@ def harvest(article, selectors: dict[str, str], expand: bool = True) -> Article 
         record["links"] = _links(article, selectors)
         record["promoted"] = is_promoted(article, selectors)
         return record
-    except Exception:
+    except Exception as error:
+        global _REPORTED
+        if _REPORTED < 5:
+            _REPORTED += 1
+            print(f"  ! harvest failed on an article: {type(error).__name__}: {error}", flush=True)
         return None
 
 

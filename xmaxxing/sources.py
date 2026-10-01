@@ -42,6 +42,18 @@ def _interstitial(page, selectors: dict[str, str]) -> bool:
         return False
 
 
+def _harvest_with_retry(page, selectors: dict[str, str], attempts: int = 3):
+    records = harvest_all(page, selectors)
+    for attempt in range(1, attempts):
+        if records:
+            break
+        wait = 6000 * attempt
+        print(f"  (no articles yet, waiting {wait // 1000}s more...)")
+        page.wait_for_timeout(wait)
+        records = harvest_all(page, selectors)
+    return records
+
+
 def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, deadline: datetime | None = None) -> dict[str, int]:
     run = config.section("run")
     queries = config.queries
@@ -54,14 +66,13 @@ def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, 
         max_pages = int(query.get("max_pages", 3))
         url = search_url(query["q"])
         print(f"\n[query] {label}  pages<={max_pages}")
-        if not open_page(page, url, selectors.get("tweet"), timeout_ms=25000):
-            print("  ! search page did not load")
-            continue
-        page.wait_for_timeout(2500)
+        if not open_page(page, url, selectors.get("tweet"), timeout_ms=30000):
+            page.wait_for_timeout(5000)
+        page.wait_for_timeout(3000)
         for page_index in range(max_pages):
             if deadline and datetime.now() >= deadline:
                 break
-            records = harvest_all(page, selectors)
+            records = _harvest_with_retry(page, selectors)
             new_items = 0
             for record in records:
                 if record.get("promoted"):
@@ -101,7 +112,7 @@ def iter_home(page, config, selectors: dict[str, str], on_record: RecordSink, de
     while True:
         if deadline and datetime.now() >= deadline:
             break
-        records = harvest_all(page, selectors)
+        records = _harvest_with_retry(page, selectors, attempts=1)
         new_items = 0
         for record in records:
             if record.get("promoted"):

@@ -54,10 +54,18 @@ COMPANIES_HOST = re.compile(r"utm_(?:source|campaign)=|twclid=")
 INTERNAL_LINK = re.compile(r"^(?:https?://)?(?:www\.)?(?:x|twitter)\.com/(?:[\w.]+/(?:status(?:es)?/\d+|search|hashtag|explore|i|notifications|messages|settings|home|[A-Za-z_]+)|intent|tweet)", re.IGNORECASE)
 
 
+def absolutize(url: str) -> str:
+    if url.startswith(("http://", "https://")):
+        return url
+    if url.startswith("/"):
+        return "https://x.com" + url
+    return url
+
+
 def status_key(url: str | None) -> str | None:
     if not url:
         return None
-    match = STATUS_RE.search(url)
+    match = STATUS_RE.search(absolutize(url))
     if not match:
         return None
     return f"{match.group('user').lower()}/{match.group('id')}"
@@ -66,7 +74,7 @@ def status_key(url: str | None) -> str | None:
 def canonical_status_url(url: str | None) -> str | None:
     if not url:
         return None
-    match = STATUS_RE.search(url)
+    match = STATUS_RE.search(absolutize(url))
     if not match:
         return None
     return f"https://x.com/{match.group('user')}/status/{match.group('id')}"

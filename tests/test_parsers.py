@@ -36,9 +36,12 @@ def test_status_key_canonicalises_every_variant() -> None:
         "https://x.com/ajay_2512x/status/2065013524519330282/analytics",
         "https://x.com/ajay_2512x/status/2065013524519330282/photo/1",
         "https://twitter.com/Ajay_2512x/status/2065013524519330282",
+        "/ajay_2512x/status/2065013524519330282",
+        "/ajay_2512x/status/2065013524519330282/analytics",
     ]
     keys = {extract.status_key(url) for url in variants}
     assert keys == {"ajay_2512x/2065013524519330282"}, keys
+    assert extract.canonical_status_url("/ajay_2512x/status/123/photo/1") == "https://x.com/ajay_2512x/status/123"
     assert extract.status_key("https://x.com/search?q=hiring") is None
 
 
@@ -213,6 +216,31 @@ def test_scorer_accepts_ai_jobs_and_rejects_noise() -> None:
         assert scorer.verdict(scorer.score_text(text, has_links=True))[0], text
     for text in bad:
         assert not scorer.verdict(scorer.score_text(text, has_links=True))[0], text
+
+
+def test_hackathon_gate_requires_a_call_to_action() -> None:
+    scorer = filters.Scorer(CONFIG)
+    keep = [
+        "Registration is open for the Bharatiya Antariksh Hackathon 2026. Prize pool 5L. Deadline June 30. Apply now.",
+        "ISRO launches Bharatiya Antariksh Hackathon (BAH) 2026. The third edition features problem statements in AI/ML.",
+        "Six weeks. $60,000+ in prizes. The PayPal AI Hackathon: Build What is Next with PayPal and AI is live.",
+    ]
+    drop = [
+        "Your October crypto calendar is here. From major crypto events and token unlocks to key macro data, there is a lot to watch.",
+        "Heading to New York for @RippleSwell 2026? The side events Luma calendar is now live, and it is the place for every event.",
+        "holy moly, we won the 1st prize on the hackathon with a 3D tea shop using three.js. Huge thank you to the sponsors!",
+        "Less than 6 hours left in Steve Arena Season 1. Put your agent to work and compete for 15M $STEVE and Superteam payouts.",
+    ]
+    for text in keep:
+        assert scorer.verdict(scorer.score_text(text, has_links=True))[0], text
+    for text in drop:
+        assert not scorer.verdict(scorer.score_text(text, has_links=True))[0], text
+
+
+def test_relative_hrefs_from_the_dom_are_accepted() -> None:
+    assert extract.status_key("/jack/status/1750000000000000000") == "jack/1750000000000000000"
+    assert extract.canonical_status_url("/jack/status/1750000000000000000/analytics") == "https://x.com/jack/status/1750000000000000000"
+    assert extract.absolutize("/i/bookmarks") == "https://x.com/i/bookmarks"
 
 
 def test_role_match_handles_hyphens_and_plurals() -> None:

@@ -112,12 +112,42 @@ INTERNSHIP_TERMS: list[str] = [
     r"\bstipend\b",
 ]
 
+HACKATHON_CTA_PATTERNS: list[str] = [
+    r"\bregister(?:s|ed|ing)?\b",
+    r"\bsign ?ups?\b",
+    r"\bapply(?:ing|ied|ies)?\b",
+    r"\bsubmit(?:s|ting|ted)?\b",
+    r"\bsubmissions?\b",
+    r"\bparticipat(?:e|es|ed|ing|ion|ors?)\b",
+    r"\bentr(?:y|ies)\b",
+    r"\bdeadlines?\b",
+    r"\bprizes?\b",
+    r"\bwinner(?:s)?\b",
+    r"\bjoin(?:s|ed|ing)?\b",
+    r"\bspots?\b",
+    r"\brounds?\b",
+    r"\blaunch(?:es|ed|ing)?\b",
+    r"\bhosting\b",
+    r"\bco-?host(?:ing)?\b",
+    r"\bcall(?:s|ing)?\b",
+    r"\bopen(?:ing)? (?:now|today|soon)\b",
+    r"\bregistrations?\b",
+    r"\beditions?\b",
+    r"\bstars?\b",
+    r"\bscheduled\b",
+    r"\bparticipants?\b",
+    r"\bteams?\b",
+    r"\bapply\b",
+    r"\bdms? (?:are )?open\b",
+]
+
 
 def _compile_all(patterns: Iterable[str]) -> list[tuple[str, re.Pattern[str]]]:
     return [(pattern, re.compile(pattern, re.IGNORECASE)) for pattern in patterns]
 
 
 LEGACY_NEGATIVES = _compile_all(LEGACY_NEGATIVE_PATTERNS)
+HACKATHON_CTA = _compile_all(HACKATHON_CTA_PATTERNS)
 HACKATHONS = _compile_all(HACKATHON_PATTERNS)
 JOBS = _compile_all(JOB_PATTERNS)
 INTERNSHIP = _compile_all(INTERNSHIP_TERMS)
@@ -296,6 +326,10 @@ class Scorer:
             return False, f"score:{result.score}<{self.threshold}"
         if result.kind is None:
             return False, "no_kind"
-        if result.kind != "hackathon" and result.role_hit is None:
+        if result.kind == "hackathon":
+            if not any(pattern.search(result.text) for _, pattern in HACKATHON_CTA):
+                return False, "hackathon_without_cta"
+            return True, result.reason()
+        if result.role_hit is None:
             return False, "profile_role_mismatch"
         return True, result.reason()

@@ -280,6 +280,12 @@ patterns = [
   '\bjudges? (?:said|feedback)\b',
   '\bhackathon (?:recap|review|winners?|results?)\b',
   '\b(?:1st|2nd|3rd|first|second|third) place\b',
+  '\b(?:1st|2nd|3rd|first|second|third) prize\b',
+  '\bwe won\b',
+  '\bhonou?r(?:ed)?\b',
+  '\bhuge thank you\b',
+  '\bsubmissions?\b',
+  '\bmy (?:submission|entry)\b',
   '\bwhat does a .{0,30}look like\b',
   '\bmeet [A-Z][a-z]+!',
   '\bhackathon project\b',
@@ -330,6 +336,17 @@ patterns = [
   '\bnft\b',
   '\bairdrop\b',
   '\bweb3\b',
+  '\bdefi\b',
+  '\bblockchain\b',
+  '\bon[- ]?chain\b',
+  '\b(?:crypto|token)s?\b',
+  '\bstaking\b',
+  '\bnft\b',
+  '\bwallet\b',
+  '\bswap\b',
+  '\bsolana\b',
+  '\bethereum\b',
+  '\bsuperteam\b',
   '\bprice (?:prediction|target)\b',
 ]
 
@@ -415,9 +432,9 @@ max_pages = 3
 q = '(hiring OR "we are hiring") (fresher OR "graduate engineer" OR "entry level") (Bangalore OR Hyderabad OR Delhi OR Mumbai OR Pune OR Chennai OR remote) (apply OR "DM me") lang:en -filter:replies min_faves:2'
 
 [[queries.items]]
-name = "jobboards"
+name = "apply-links"
 max_pages = 3
-q = '(site:jobfound.org OR site:greenhouse.io OR site:lever.co OR site:jobs.ashbyhq.com OR site:wellfound.com) (hiring OR "is hiring") (engineer OR developer OR intern) lang:en -filter:replies'
+q = '("is hiring" OR "we are hiring" OR "job opening") (intern OR engineer OR "graduate engineer") filter:links lang:en -filter:replies min_faves:1'
 
 [selectors]
 tweet = 'article[data-testid="tweet"]'

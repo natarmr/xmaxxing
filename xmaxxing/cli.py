@@ -69,6 +69,8 @@ def _entry_from(record: dict[str, Any], posting, score, kind: str) -> dict[str, 
 
 
 def cmd_login(args, config) -> int:
+    import time
+
     from playwright.sync_api import sync_playwright
 
     paths = _paths(config)
@@ -79,19 +81,37 @@ def cmd_login(args, config) -> int:
     if not auth_file.is_absolute():
         auth_file = config.path.parent / auth_file
     selectors = config.selectors
+    timeout_seconds = int(args.timeout_minutes) * 60
+    print(f"profile: {profile_dir}")
+    print(f"session: {auth_file}")
+    print("A Chromium window is opening on the X login page.", flush=True)
     with sync_playwright() as playwright:
         context = browser.launch_context(playwright, config, profile_dir, auth_file)
         page = browser.first_page(context)
-        page.goto("https://x.com/home", wait_until="domcontentloaded")
-        print("Browser open. Log in with your new account (2FA included), then come back here.")
-        input("Press Enter once the home timeline is visible... ")
-        if not browser.is_logged_in(page, selectors):
-            print("Still not logged in - nothing exported.")
-            context.close()
-            return 1
+        page.goto("https://x.com/i/flow/login", wait_until="domcontentloaded", timeout=90000)
+        try:
+            page.bring_to_front()
+        except Exception:
+            pass
+        start = time.time()
+        announced = 0.0
+        while True:
+            if browser.is_logged_in(page, selectors, timeout_ms=2000):
+                time.sleep(5)
+                print("Login detected.", flush=True)
+                break
+            waited = time.time() - start
+            if waited - announced >= 15:
+                announced = waited
+                print(f"  waiting for login... {int(waited)}s / {timeout_seconds}s", flush=True)
+            if waited >= timeout_seconds:
+                print("Timed out. Nothing saved.")
+                context.close()
+                return 1
+            time.sleep(2)
         browser.export_auth(context, auth_file)
         context.close()
-    print(f"Done. Future runs reuse {auth_file.name}; no password is stored.")
+    print(f"Done. Future runs reuse {auth_file.name}; no password is stored.", flush=True)
     return 0
 
 
@@ -162,15 +182,13 @@ def cmd_run(args, config) -> int:
             record["apply_urls"] = posting.apply_urls
             entry = _entry_from(record, posting, score, kind)
             counts["postings"] += 1
-            if args.dry_run:
-                LOG.info("would keep [%s] score=%s %s", kind, score.score, extract.snippet(text, 120))
-                continue
-            if kind == "hackathon":
-                storage.append_jsonl(paths["hack_jsonl"], entry)
-                hack_digest.append(entry)
-            else:
-                storage.append_jsonl(paths["jobs_jsonl"], entry)
-                jobs_digest.append(entry)
+            if not args.dry_run:
+                if kind == "hackathon":
+                    storage.append_jsonl(paths["hack_jsonl"], entry)
+                    hack_digest.append(entry)
+                else:
+                    storage.append_jsonl(paths["jobs_jsonl"], entry)
+                    jobs_digest.append(entry)
         if kind == "job":
             kept_records.append(record)
         counts["kept"] += 1
@@ -340,6 +358,7 @@ def build_parser() -> argparse.ArgumentParser:
     login = sub.add_parser("login", help="log in once and export the session")
     login.add_argument("--profile", default=None)
     login.add_argument("--auth", default=None)
+    login.add_argument("--timeout-minutes", type=int, default=20, dest="timeout_minutes")
     login.set_defaults(func=cmd_login)
 
     run = sub.add_parser("run", help="scrape and write results")
