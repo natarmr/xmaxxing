@@ -206,3 +206,64 @@ def test_style_apply_never_introduces_a_banned_word() -> None:
     for phrase in ("student", "university", "college", "graduat", "sgpa", "cgpa", "b.tech", "year of study"):
         assert phrase not in lowered, f"style transform leaked {phrase!r}: {draft}"
     assert "{" not in draft, draft
+
+
+# --- reply links reach the action decision --------------------------------
+
+
+def test_reply_links_change_the_action_decision() -> None:
+    """--reply-links exists to stop you messaging people who posted a form.
+
+    The harvested URLs must reach decide_action, or a post saying "link in
+    replies" counts as having no apply link and gets messaged anyway.
+    """
+    record = {
+        "key": "acme/1",
+        "text": "Acme is hiring AI interns. Reply with your portfolio",
+        "kind": "job",
+        "handle": "acme",
+        "roles": ["AI Intern"],
+        "company": "Acme",
+        "apply_urls": [],
+    }
+    assert outreach.decide_action(record, EXAMPLE_CONFIG)[0] == "reply"
+    assert len(outreach.build_actions([record], TEMPLATES, EXAMPLE_CONFIG)) == 1
+
+    reply_map = {"acme/1": ["https://boards.greenhouse.io/acme/jobs/1"]}
+    suppressed = outreach.build_actions([record], TEMPLATES, EXAMPLE_CONFIG, reply_map)
+    assert suppressed == [], f"a recovered apply link must suppress the outreach: {suppressed}"
+
+    probe = dict(record, reply_urls=reply_map["acme/1"])
+    action, reason = outreach.decide_action(probe, EXAMPLE_CONFIG)
+    assert action == "apply", (action, reason)
+    assert reason == "real_apply_link_exists", reason
+
+
+def test_an_unresolved_reply_link_does_not_suppress_outreach() -> None:
+    record = {
+        "key": "acme/2",
+        "text": "DM me about the AI intern role",
+        "kind": "job",
+        "handle": "acme",
+        "apply_urls": [],
+    }
+    reply_map = {"acme/2": ["https://t.co/stillunresolved"]}
+    assert len(outreach.build_actions([record], TEMPLATES, EXAMPLE_CONFIG, reply_map)) == 1
+
+
+def test_reply_links_are_carried_onto_queued_actions() -> None:
+    record = {
+        "key": "acme/3",
+        "text": "DM me about the intern role",
+        "kind": "job",
+        "handle": "acme",
+        "roles": ["Intern"],
+        "company": "Acme",
+        "apply_urls": [],
+    }
+    reply_map = {"acme/3": ["https://twitter.com/acme/status/2"]}
+    actions = outreach.build_actions([record], TEMPLATES, EXAMPLE_CONFIG, reply_map)
+    assert len(actions) == 1
+    assert actions[0]["reply_urls"] == reply_map["acme/3"], actions[0]
+    assert actions[0]["status"] == "pending"
+    assert actions[0]["draft"], "a queued action must carry a draft"

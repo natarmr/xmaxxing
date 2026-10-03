@@ -147,3 +147,104 @@ def test_iter_search_without_control_still_runs(monkeypatch) -> None:
     stats = sources.iter_search(page, config, {"tweet": "article"}, lambda _record: True, control=None)
     assert stats["queries"] == 1, stats
     assert stats["pages"] == 1, stats
+
+
+# --- CLI wiring ----------------------------------------------------------
+
+
+def test_cmd_run_reaches_the_runner_without_name_errors(monkeypatch) -> None:
+    """cmd_run used `runner.RunOptions` while importing only `Runner`.
+
+    Nothing in the suite executed cmd_run, so that NameError shipped and only
+    surfaced on the first real `xmaxxing run`. Drive the whole
+    parse-args -> build-options -> Runner.run path with a stand-in runner.
+    """
+    from xmaxxing import cli
+    from xmaxxing import runner as runner_module
+
+    captured = {}
+
+    class _FakeRunner:
+        def __init__(self, config, paths, bus=None):
+            captured["paths"] = paths
+
+        def run(self, options, control, log_path=None):
+            captured["options"] = options
+            captured["control"] = control
+            return runner_module.RunResult(
+                counts={key: 0 for key in runner_module.COUNT_KEYS},
+                stats={"pages": 1, "queries": 2},
+                elapsed_minutes=1.5,
+            )
+
+    monkeypatch.setattr(cli, "Runner", _FakeRunner)
+    monkeypatch.setattr(cli, "setup_logging", lambda config: None)
+
+    config = config_module.load(EXAMPLE_CONFIG)
+    args = cli.build_parser().parse_args(
+        ["run", "--minutes", "7", "--dry-run", "--no-resolve", "--reply-links", "3", "--source", "home"]
+    )
+    assert cli.cmd_run(args, config) == 0
+
+    options = captured["options"]
+    assert options.minutes == 7
+    assert options.source == "home"
+    assert options.dry_run is True
+    assert options.no_resolve is True
+    assert options.reply_links == 3
+    # The time budget must survive the hand-off, or the run would never stop.
+    assert captured["control"].remaining() is not None
+    assert captured["control"].remaining() <= 7 * 60
+
+
+def test_cmd_run_uses_the_config_default_minutes(monkeypatch) -> None:
+    from xmaxxing import cli
+    from xmaxxing import runner as runner_module
+
+    captured = {}
+
+    class _FakeRunner:
+        def __init__(self, *a, **k):
+            pass
+
+        def run(self, options, control, log_path=None):
+            captured["options"] = options
+            return runner_module.RunResult(counts={}, stats={}, elapsed_minutes=0.1)
+
+    monkeypatch.setattr(cli, "Runner", _FakeRunner)
+    monkeypatch.setattr(cli, "setup_logging", lambda config: None)
+
+    config = config_module.load(EXAMPLE_CONFIG)
+    args = cli.build_parser().parse_args(["run"])
+    assert cli.cmd_run(args, config) == 0
+    assert captured["options"].minutes == float(config.get("run", "minutes", 30))
+
+
+# --- stop vs. budget expiry ----------------------------------------------
+
+
+def test_running_out_of_time_is_not_the_same_as_being_stopped() -> None:
+    """Post-processing is gated on stop_requested, not should_stop().
+
+    should_stop() is also true once the --minutes budget elapses. If the
+    post-processing gate used it, a run that used its full budget would skip the
+    reply-link harvest, the action queue and the drafts - i.e. everything the
+    scrape was for - and only save seen.json. That is not a distinction you can
+    eyeball, so pin it.
+    """
+    expired = control.RunControl(minutes=0.001)
+    time.sleep(0.12)
+    assert expired.should_stop() is True, "budget should be exhausted"
+    assert expired.stop_requested is False, "nobody pressed stop"
+
+    pressed = control.RunControl(minutes=None)
+    pressed.request_stop()
+    assert pressed.stop_requested is True
+
+
+def test_stop_requested_stays_true_after_the_budget_expires() -> None:
+    both = control.RunControl(minutes=0.001)
+    time.sleep(0.12)
+    both.request_stop()
+    assert both.should_stop() is True
+    assert both.stop_requested is True

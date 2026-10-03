@@ -259,12 +259,18 @@ class Runner:
                 else:
                     result.stats = sources.iter_home(page, config, selectors, on_record, control=control)
 
-                if options.reply_links > 0 and kept_records and not options.dry_run and not control.should_stop():
+                # Gate on stop_requested, NOT should_stop(). Running out of time
+                # budget is not a reason to skip post-processing: the harvest and
+                # the action queue are cheap, bounded work that the scrape exists
+                # to feed. Only an operator pressing stop skips them - that is
+                # what makes Stop a kill switch rather than a pause.
+                stopped_by_operator = control.stop_requested
+                if options.reply_links > 0 and kept_records and not options.dry_run and not stopped_by_operator:
                     self.emit("state", phase="reply_links", count=options.reply_links)
                     LOG.info("harvesting reply links for top %s posts", options.reply_links)
                     ranked = sorted(kept_records, key=lambda item: item.get("score", 0), reverse=True)[: options.reply_links]
                     for record in ranked:
-                        if control.should_stop():
+                        if control.stop_requested:
                             break
                         try:
                             urls = outreach.harvest_reply_links(page, record["tweet_url"], config, selectors)
@@ -281,7 +287,7 @@ class Runner:
                             })
                             LOG.info("reply links for %s: %s", record["key"], len(urls))
 
-                if not options.dry_run and not control.should_stop():
+                if not options.dry_run and not stopped_by_operator:
                     reply_map = {
                         row["key"]: row.get("urls", [])
                         for row in storage.read_jsonl(paths["reply_links"])

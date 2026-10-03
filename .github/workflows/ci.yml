@@ -8,14 +8,16 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Pinned deliberately: ubuntu-latest migrates to Ubuntu 26 on 2026-10-19,
+    # which moves the ground under a workflow without changing it.
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         # 3.11 is the floor: the code uses tomllib.
         python-version: ["3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
@@ -37,19 +39,17 @@ jobs:
         run: python tests/test_corpus.py
 
   guardrails:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # Full history: these are the files that must never contain a secret
           # or a real identity, and they have to be checked at every revision.
           fetch-depth: 0
 
-      - name: No secrets in the tree
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      # These two run first and are pure git. They cannot break on a runner
+      # upgrade, and they are the checks most likely to catch a real mistake -
+      # a scanner failing behind them only tells you the scanner failed.
       - name: config.toml must not be tracked
         # It holds the user's identity by design; only the placeholder template
         # belongs in the repo.
@@ -67,3 +67,30 @@ jobs:
             echo "$tracked"
             exit 1
           fi
+
+      - name: Browser profiles and auth must not be tracked
+        run: |
+          tracked=$(git ls-files -- 'x_user_data*' 'auth*.json' '*.pdf')
+          if [ -n "$tracked" ]; then
+            echo "session material is tracked:"
+            echo "$tracked"
+            exit 1
+          fi
+
+      # Pinned binary rather than gitleaks/gitleaks-action: that action targets
+      # Node 20, which GitHub now force-runs on Node 24, where it dies with a
+      # bare "Unexpected exit code [1]". A curl + sha256 check has no runtime to
+      # break. Bumping GITLEAKS_VERSION means updating SHA256_LINUX_X64 too -
+      # take both from the release's own checksums.txt.
+      - name: No secrets in history
+        env:
+          GITLEAKS_VERSION: v8.30.1
+          SHA256_LINUX_X64: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          set -euo pipefail
+          url="https://github.com/gitleaks/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_x64.tar.gz"
+          curl -sSfL "$url" -o gitleaks.tar.gz
+          echo "${SHA256_LINUX_X64}  gitleaks.tar.gz" | sha256sum --check --strict -
+          tar -xzf gitleaks.tar.gz gitleaks
+          # `git` scans history. (`detect` is the deprecated alias for it.)
+          ./gitleaks git --no-banner --redact --exit-code 1 .

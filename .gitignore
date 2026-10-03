@@ -16,6 +16,9 @@ dist/
 # --- personal, kept local ---
 # your identity, not the shipped placeholder. Commit config.example.toml instead.
 config.toml
+config.scratch.toml
+config.scratch*.toml
+scratch/
 *.pdf
 *.md.local
 

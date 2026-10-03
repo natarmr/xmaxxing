@@ -12,7 +12,7 @@ from typing import Any
 
 from . import browser, config as config_module, extract, filters, outreach, storage
 from .control import RunControl
-from .runner import Runner
+from .runner import RunOptions, Runner
 
 LOG = logging.getLogger("xmaxxing")
 
@@ -102,7 +102,7 @@ def cmd_run(args, config) -> int:
     log_path = setup_logging(config)
     paths = _paths(config)
     minutes = float(args.minutes if args.minutes is not None else config.get("run", "minutes", 30))
-    options = runner.RunOptions(
+    options = RunOptions(
         source=args.source,
         minutes=minutes,
         dry_run=bool(args.dry_run),
@@ -146,8 +146,11 @@ def cmd_run(args, config) -> int:
     print("\n" + "=" * 60)
     print(f"run finished in {result.elapsed_minutes:.1f} min (log: {log_path.name if log_path else '-'})")
     counts = result.counts
-    print(f"  scanned={counts['scanned']} kept={counts['kept']} postings={counts['postings']}")
-    print(f"  rejected={counts['rejected']} promoted={counts['promoted']} duplicates={counts['duplicates']} collapsed={counts['collapsed']}")
+    # .get, not [...]: a RunResult that never reached the scraping loop carries
+    # no counters, and a summary print must not be what turns that into a crash.
+    print(f"  scanned={counts.get('scanned', 0)} kept={counts.get('kept', 0)} postings={counts.get('postings', 0)}")
+    print(f"  rejected={counts.get('rejected', 0)} promoted={counts.get('promoted', 0)} "
+          f"duplicates={counts.get('duplicates', 0)} collapsed={counts.get('collapsed', 0)}")
     print(f"  pages={result.stats.get('pages')} queries={result.stats.get('queries')}")
     if result.stopped:
         print("  stopped early on request")

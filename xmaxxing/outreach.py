@@ -154,10 +154,18 @@ def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], conf
     if style_profile is None:
         style_profile = style.from_config(config)
     for record in records:
-        action, reason = decide_action(record, config)
+        reply_urls = reply_map.get(record.get("key", ""), [])
+        # Resolve the harvested links BEFORE deciding. decide_action demotes a
+        # post to "apply" when a real apply link exists, and the whole point of
+        # --reply-links is to recover links hidden in the thread - so a post
+        # asking you to "check the replies" must not be messaged once we've
+        # found the form it was pointing at. Deciding first (and only attaching
+        # reply_urls afterwards) silently threw that away.
+        probe = dict(record)
+        probe["reply_urls"] = reply_urls
+        action, reason = decide_action(probe, config)
         if action in {"none", "apply"}:
             continue
-        reply_urls = reply_map.get(record.get("key", ""), [])
         entry = {
             "key": record.get("key"),
             "tweet_url": record.get("tweet_url"),
