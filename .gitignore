@@ -10,12 +10,26 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 *.egg-info/
+build/
+dist/
 
 # --- personal, kept local ---
-resume.pdf
+# your identity, not the shipped placeholder. Commit config.example.toml instead.
+config.toml
 *.pdf
+*.md.local
 
-# --- runtime output ---
+# --- your own tone corpus / style profile inputs ---
+style_corpus.txt
+my_replies.txt
+
+# --- runtime output: markdown digests ---
+# these look like source but are scraper output - see [paths] in config.toml
+jobs_and_hackathons.md
+hackathons.md
+dashboard.html
+
+# --- runtime output: jsonl + state ---
 logs/
 seen.json
 jobs.jsonl

@@ -52,9 +52,19 @@ class Config:
         return candidate if candidate.is_absolute() else self.path.parent / candidate
 
 
+EXAMPLE_NAME = "config.example.toml"
+
+
 def load(path: str | Path | None = None) -> Config:
     config_path = Path(path) if path else Path(__file__).resolve().parent.parent / "config.toml"
     if not config_path.exists():
+        root = config_path.parent
+        if (root / EXAMPLE_NAME).exists() and path is None:
+            raise ConfigError(
+                f"{config_path.name} not found. Copy the template and edit [profile]:\n"
+                f"    Copy-Item {EXAMPLE_NAME} config.toml    # PowerShell\n"
+                f"    cp {EXAMPLE_NAME} config.toml            # bash"
+            )
         raise ConfigError(f"config file not found: {config_path}")
     with config_path.open("rb") as handle:
         data = tomllib.load(handle)

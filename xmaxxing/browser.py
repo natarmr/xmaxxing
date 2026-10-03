@@ -128,15 +128,37 @@ def is_logged_in(page, selectors: dict[str, str], timeout_ms: int = 8000) -> boo
         time.sleep(1.0)
 
 
-def ensure_login(page, config, selectors: dict[str, str]) -> bool:
+def ensure_login(page, config, selectors: dict[str, str], control=None, on_state=None) -> bool:
+    """Block until X accepts the session.
+
+    `control` is a RunControl; polling it turns an unbounded wait into one the
+    operator can abort from the dashboard. Without it this loop never returns on
+    a rejected session, which is how an unattended `run` hangs forever.
+
+    `on_state` is called as `on_state("waiting_for_login", ...)` so a UI can say
+    *why* nothing is happening instead of showing a bare spinner.
+    """
     if is_logged_in(page, selectors):
         return True
+
+    def emit(phase: str, **payload) -> None:
+        if on_state is None:
+            return
+        try:
+            on_state(phase, **payload)
+        except Exception:
+            pass
+
+    def aborted() -> bool:
+        return control is not None and control.should_stop()
+
     if auth_file_present(config):
         print("Session file exists but X rejected it - it may have expired.")
     print("\n" + "=" * 62)
     print("NOT LOGGED IN. A browser window is open at the X login page.")
     print("Log in there (2FA included). This script will continue on its own.")
     print("=" * 62 + "\n")
+    emit("waiting_for_login", timeout_seconds=None)
     try:
         if "/i/flow/login" not in page.url:
             page.goto("https://x.com/i/flow/login", wait_until="domcontentloaded", timeout=60000)
@@ -149,14 +171,20 @@ def ensure_login(page, config, selectors: dict[str, str]) -> bool:
     announced = 0.0
     start = time.time()
     while True:
+        if aborted():
+            emit("login_aborted")
+            print("Stopped while waiting for login.")
+            return False
         if is_logged_in(page, selectors, timeout_ms=2000):
             time.sleep(4)
             print("Login detected.")
+            emit("logged_in")
             return True
         waited = time.time() - start
         if waited - announced >= 30:
             announced = waited
             print(f"  still waiting for login ({int(waited)}s)...", flush=True)
+            emit("waiting_for_login", waited_seconds=int(waited))
 
 
 def auth_file_present(config) -> bool:

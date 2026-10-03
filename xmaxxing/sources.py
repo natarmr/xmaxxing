@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import time
 import urllib.parse
-from datetime import datetime, timedelta
 from typing import Any, Callable
 
 from .browser import open_page, sleep_jitter
@@ -54,12 +52,12 @@ def _harvest_with_retry(page, selectors: dict[str, str], attempts: int = 3):
     return records
 
 
-def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, deadline: datetime | None = None) -> dict[str, int]:
+def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, control=None) -> dict[str, int]:
     run = config.section("run")
     queries = config.queries
     stats = {"pages": 0, "scraped": 0, "accepted": 0, "queries": 0}
     for query in queries:
-        if deadline and datetime.now() >= deadline:
+        if control is not None and control.should_stop():
             break
         stats["queries"] += 1
         label = query.get("name", query.get("q", "")[:40])
@@ -70,7 +68,7 @@ def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, 
             page.wait_for_timeout(5000)
         page.wait_for_timeout(3000)
         for page_index in range(max_pages):
-            if deadline and datetime.now() >= deadline:
+            if control is not None and control.should_stop():
                 break
             records = _harvest_with_retry(page, selectors)
             new_items = 0
@@ -99,7 +97,7 @@ def iter_search(page, config, selectors: dict[str, str], on_record: RecordSink, 
     return stats
 
 
-def iter_home(page, config, selectors: dict[str, str], on_record: RecordSink, deadline: datetime | None = None) -> dict[str, int]:
+def iter_home(page, config, selectors: dict[str, str], on_record: RecordSink, control=None) -> dict[str, int]:
     run = config.section("run")
     stats = {"pages": 0, "scraped": 0, "accepted": 0, "queries": 0}
     print("\n[source] home feed")
@@ -110,7 +108,7 @@ def iter_home(page, config, selectors: dict[str, str], on_record: RecordSink, de
     consecutive_empty = 0
     page.wait_for_timeout(3000)
     while True:
-        if deadline and datetime.now() >= deadline:
+        if control is not None and control.should_stop():
             break
         records = _harvest_with_retry(page, selectors, attempts=1)
         new_items = 0
@@ -141,7 +139,3 @@ def iter_home(page, config, selectors: dict[str, str], on_record: RecordSink, de
             page.mouse.wheel(0, 3000)
         sleep_jitter(int(run.get("scroll_pause_ms", 2200)), int(run.get("scroll_jitter_ms", 1600)))
     return stats
-
-
-def deadline_from_minutes(minutes: int) -> datetime:
-    return datetime.now() + timedelta(minutes=minutes)

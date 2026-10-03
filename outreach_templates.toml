@@ -1,5 +1,14 @@
-portfolio = "https://your-portfolio.example"
-headline = "ML engineer"
+# Outreach wording.
+#
+# {headline} and {portfolio} are filled from [profile] in config.toml, not from
+# this file. Anything you set here for those names is ignored.
+#
+# Available slots: {role} {company} {name} {author} {their_requirement}
+#                  {product_line} {proof} {headline} {portfolio}
+#
+# A line whose slots all resolve to empty is dropped from the draft, so an
+# unknown role or company degrades to "the role opening" rather than leaving a
+# visible {placeholder}.
 
 [reply_post]
 use_when = "post asks for comments, replies or a portfolio"
@@ -20,6 +29,12 @@ Portfolio and resume: {portfolio}
 
 Open to a 15-minute call this week?
 """
+
+# --- not selected by the CLI yet ---
+# build_draft picks only `dm_recruiter` (action == "dm") or `reply_post`
+# (everything else). The two templates below are kept as written material and
+# are not rendered by any current code path, so editing them changes nothing.
+# Wire them up before expecting an effect.
 
 [dm_founder]
 use_when = "small team or stealth startup, no recruiter in the thread"

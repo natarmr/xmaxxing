@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import os
 import random
 import re
 import sys
@@ -13,6 +15,7 @@ from .browser import open_page, sleep_jitter
 from .dom import harvest_all
 from .extract import best_target, looks_like_apply_url, snippet
 from .storage import append_jsonl, read_jsonl
+from . import style
 
 TEMPLATE_KEYS = ("reply_post", "dm_recruiter", "dm_founder", "follow_up")
 
@@ -26,10 +29,47 @@ def load_templates(path: Path) -> dict[str, Any]:
         return tomllib.load(handle)
 
 
+def pick_index(count: int, seed: str) -> int:
+    """Deterministic index from a string seed.
+
+    Stable across processes and Python runs - `random` is not, so variant choice
+    must not use it. The same tweet key always picks the same variant, which
+    matters because a redraft should not silently reword something already sent.
+    """
+    if count <= 0:
+        return 0
+    return sum(ord(char) for char in seed) % count
+
+
 def pick_proof(points: list[str], seed: str) -> str:
     if not points:
         return ""
-    return points[sum(ord(char) for char in seed) % len(points)]
+    return points[pick_index(len(points), seed)]
+
+
+def template_variants(entry: dict[str, Any]) -> list[str]:
+    """All renderable bodies for a template entry, `text` first.
+
+    `variants` is an optional list of alternates. Keeping `text` as variant 0
+    means the existing single-template config keeps working untouched.
+    """
+    if not isinstance(entry, dict):
+        return []
+    bodies: list[str] = []
+    head = entry.get("text")
+    if isinstance(head, str) and head.strip():
+        bodies.append(head)
+    for extra in entry.get("variants", []) or []:
+        if isinstance(extra, str) and extra.strip() and extra not in bodies:
+            bodies.append(extra)
+    return bodies
+
+
+def pick_variant(entry: dict[str, Any], seed: str) -> str:
+    bodies = template_variants(entry)
+    if not bodies:
+        return ""
+    return bodies[pick_index(len(bodies), seed)]
 
 
 def fill(template: str, mapping: dict[str, str]) -> str:
@@ -66,7 +106,8 @@ def decide_action(record: dict[str, Any], config) -> tuple[str, str]:
     return "none", "no_cta"
 
 
-def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], config) -> str:
+def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], config,
+                style_profile=None) -> str:
     if action in {"none", "apply", "follow"}:
         return ""
     profile = config.profile
@@ -81,7 +122,11 @@ def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], 
             requirement = candidate
             break
     key = "dm_recruiter" if action == "dm" else "reply_post"
-    template = templates.get(key, {}).get("text", "")
+    entry = templates.get(key) if isinstance(templates.get(key), dict) else {}
+    # Seeded on the tweet key so a redraft reproduces the same wording instead
+    # of silently changing something you already sent.
+    seed = record.get("key", "")
+    body = pick_variant(entry, seed)
     author = (record.get("handle") or "").lstrip("@")
     mapping = {
         "role": role,
@@ -90,16 +135,24 @@ def build_draft(record: dict[str, Any], action: str, templates: dict[str, Any], 
         "author": f"@{author}" if author else "there",
         "their_requirement": requirement,
         "product_line": requirement or company,
-        "proof": pick_proof(profile.get("proof_points", []), record.get("key", "")),
+        "proof": pick_proof(profile.get("proof_points", []), seed),
         "portfolio": profile.get("portfolio", ""),
         "headline": profile.get("headline", ""),
     }
-    return fill(template, mapping)
+    draft = fill(body, mapping)
+    if style_profile is not None:
+        # Runs last, so tests asserting on drafts must check the post-transform
+        # string - a transform here can reintroduce a word the template dropped.
+        draft = style.apply(draft, style_profile, seed)
+    return draft
 
 
-def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], config, reply_map: dict[str, list[str]] | None = None) -> list[dict[str, Any]]:
+def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], config, reply_map: dict[str, list[str]] | None = None,
+                  style_profile=None) -> list[dict[str, Any]]:
     reply_map = reply_map or {}
     actions: list[dict[str, Any]] = []
+    if style_profile is None:
+        style_profile = style.from_config(config)
     for record in records:
         action, reason = decide_action(record, config)
         if action in {"none", "apply"}:
@@ -122,7 +175,7 @@ def build_actions(records: list[dict[str, Any]], templates: dict[str, Any], conf
             "text": record.get("text"),
             "action": action,
             "action_reason": reason,
-            "draft": build_draft(record, action, templates, config),
+            "draft": build_draft(record, action, templates, config, style_profile),
             "created_at": datetime.now().isoformat(timespec="seconds"),
             "status": "pending",
         }
@@ -183,8 +236,9 @@ def prefill_reply(page, selectors: dict[str, str], draft: str) -> bool:
         return False
 
 
-def review(actions: list[dict[str, Any]], labels_path: Path, log_path: Path, browser_hook=None) -> dict[str, int]:
-    stats = {"pass": 0, "reject": 0, "skipped": 0, "opened": 0}
+def review(actions: list[dict[str, Any]], labels_path: Path, log_path: Path, browser_hook=None,
+           actions_path: Path | None = None) -> dict[str, int]:
+    stats = {"pass": 0, "reject": 0, "skipped": 0, "opened": 0, "resolved": 0}
     if not actions:
         print("No pending actions.")
         return stats
@@ -241,6 +295,12 @@ def review(actions: list[dict[str, Any]], labels_path: Path, log_path: Path, bro
             "verdict": choice,
             "action": action.get("action"),
         })
+        # Write the verdict back onto the queued row. Without this the item stays
+        # "pending" and the next `review` offers it again, forever.
+        if actions_path is not None and action.get("key"):
+            resolved = "sent" if choice in {"y", "pass"} else "dismissed" if choice in {"n", "reject"} else "skipped"
+            if resolve_action(action["key"], resolved, actions_path):
+                stats["resolved"] += 1
     return stats
 
 
@@ -295,11 +355,72 @@ def tune(scorer, labels: list[dict[str, Any]], threshold: int) -> dict[str, Any]
     }
 
 
+STATUSES = ("pending", "sent", "skipped", "dismissed", "attempted", "failed")
+RESOLVED = ("sent", "skipped", "dismissed", "attempted", "failed")
+
+
 def load_actions(path: Path, status: str | None = "pending") -> list[dict[str, Any]]:
     rows = list(read_jsonl(path))
     if status:
         rows = [row for row in rows if row.get("status", "pending") == status]
     return rows
+
+
+def rewrite_actions(path: Path, updates: dict[str, dict[str, Any]]) -> int:
+    """Write `status` changes back into actions.jsonl, keyed by tweet key.
+
+    Without this the queue is write-only: `review` reads rows with status
+    "pending", records a verdict in labels.jsonl, and leaves the row untouched -
+    so the same item comes back on the next review, forever.
+
+    Rewrites the whole file atomically via a temp file plus os.replace, the same
+    pattern `redraft` uses, so an interrupted dashboard can't truncate the queue.
+    Unknown keys are ignored; a key missing from the file is a no-op.
+    """
+    if not updates or not Path(path).exists():
+        return 0
+    rows = list(read_jsonl(path))
+    applied = 0
+    for row in rows:
+        patch = updates.get(row.get("key"))
+        if not patch:
+            continue
+        row.update(patch)
+        applied += 1
+    if not applied:
+        return 0
+    temp = Path(path).with_suffix(".tmp")
+    with temp.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    os.replace(temp, path)
+    return applied
+
+
+def resolve_action(key: str, status: str, path: Path, *, note: str = "", sent_url: str = "") -> bool:
+    """Move one queued action to a resolved status and stamp the time."""
+    if status not in STATUSES:
+        raise ValueError(f"unknown status {status!r}; expected one of {STATUSES}")
+    patch: dict[str, Any] = {
+        "status": status,
+        "resolved_at": datetime.now().isoformat(timespec="seconds"),
+    }
+    if note:
+        patch["note"] = note
+    if sent_url:
+        patch["sent_url"] = sent_url
+    return rewrite_actions(path, {key: patch}) > 0
+
+
+def resolved_count(path: Path) -> int:
+    """How many actions have already been dealt with. Drives the auto-send gate."""
+    if not Path(path).exists():
+        return 0
+    return sum(1 for row in read_jsonl(path) if row.get("status", "pending") in RESOLVED)
+
+
+def pending_count(path: Path) -> int:
+    return len(load_actions(path, status="pending"))
 
 
 def pending_send_report(actions: list[dict[str, Any]]) -> str:

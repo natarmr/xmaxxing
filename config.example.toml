@@ -1,3 +1,16 @@
+# xmaxxing configuration template.
+#
+# Copy this file to config.toml and edit [profile]. config.toml is gitignored:
+# it holds your identity, and the repo only ships this placeholder version.
+#
+#   Copy-Item config.example.toml config.toml    # PowerShell
+#   cp config.example.toml config.toml            # bash/macOS
+#
+# Everything below [profile] is the tuned part and is safe to leave alone:
+# scoring weights, the X queries, the DOM selectors and the output paths.
+# Tune scoring from data, not guesswork - every rejection lands in
+# rejected.jsonl with its reason and signal breakdown.
+
 [account]
 profile_dir = "x_user_data_new"
 auth_file = "auth.json"
@@ -31,9 +44,13 @@ labels_jsonl = "labels.jsonl"
 outreach_log = "outreach_log.jsonl"
 log_dir = "logs"
 
+# --- [profile] is the only section that identifies you. Edit it. ---
+# `headline` and `portfolio` are substituted into every draft you send, so keep
+# them to the public identity you are happy to sign with. Drafts never render
+# academic status: there is no field for it here on purpose, and a test fails
+# if one ever appears in the composed output.
 [profile]
 headline = "ML engineer"
-age = 19
 portfolio = "https://your-portfolio.example"
 github = "https://github.com/your-handle"
 proof_points = [
@@ -458,6 +475,25 @@ name = "apply-links"
 max_pages = 3
 q = '("is hiring" OR "we are hiring" OR "job opening") (intern OR engineer OR "graduate engineer") filter:links lang:en -filter:replies min_faves:1'
 
+[outreach]
+# mode:
+#   "review"     - never auto-send. Drafts queue for you to send. The default,
+#                  and the only mode a fresh clone should start in.
+#   "auto_after" - you send the first `auto_after` items yourself, then replies
+#                  send themselves for the rest.
+#   "auto"       - replies send themselves immediately.
+# Auto-send covers replies only; DM and follow actions always queue for review.
+# Set auto_after_sends to 0 to stop after a run, whatever the mode says.
+mode = "review"
+auto_after = 3
+auto_after_sends = 25
+# Seconds to wait for a sent reply to show up in the thread before calling it
+# failed. Verification is what separates "sent" from "attempted".
+send_verify_seconds = 12
+# Pause between sends. This throttle is what keeps a burst from looking like one.
+send_pause_ms = 4000
+send_pause_jitter_ms = 6000
+
 [selectors]
 tweet = 'article[data-testid="tweet"]'
 tweet_text = '[data-testid="tweetText"]'
@@ -474,3 +510,10 @@ reply_button = '[data-testid="reply"]'
 composer = '[data-testid="tweetTextarea_0"]'
 tweet_reply = 'article[data-testid="tweet"]'
 error_state = '[data-testid="errorDetail"]'
+# --- sending ---
+# Inline "Reply" button inside the composer. Deliberately separate from
+# reply_button above, which opens the composer.
+send_reply_button = '[data-testid="tweetButtonInline"]'
+# X's error/rate-limit toast. Checked before and after sending, because a
+# silently-failed reply is the failure mode that matters most here.
+toast = '[data-testid="toast"]'

@@ -9,7 +9,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from xmaxxing import config as config_module, extract, filters, outreach, storage
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG = config_module.load(ROOT / "config.toml")
+# Tests run against the shipped example config, never a developer's local
+# config.toml - otherwise CI depends on whatever someone tuned locally.
+EXAMPLE_CONFIG = ROOT / "config.example.toml"
+CONFIG = config_module.load(EXAMPLE_CONFIG)
 TEMPLATES = outreach.load_templates(ROOT / "outreach_templates.toml")
 
 FORBIDDEN_IN_DRAFTS = (
@@ -135,15 +138,19 @@ def test_drafts_use_public_identity_only() -> None:
         "roles": ["AI Engineer"],
         "company": "Acme",
     }
+    # Identity comes from [profile]; assert against the config, not a literal,
+    # so this holds for whoever's config is in play.
+    headline = CONFIG.get("profile", "headline")
+    portfolio = CONFIG.get("profile", "portfolio")
     draft = outreach.build_draft(record, "dm", TEMPLATES, CONFIG)
-    assert "ML engineer" in draft, draft
-    assert "https://your-portfolio.example" in draft, draft
+    assert headline in draft, draft
+    assert portfolio in draft, draft
     assert "{" not in draft, draft
     lowered = draft.lower()
     for phrase in FORBIDDEN_IN_DRAFTS:
         assert phrase not in lowered, f"draft leaked {phrase!r}: {draft}"
     reply = outreach.build_draft(record, "reply", TEMPLATES, CONFIG)
-    assert "ML engineer" in reply
+    assert headline in reply
     assert not [phrase for phrase in FORBIDDEN_IN_DRAFTS if phrase in reply.lower()]
 
 
@@ -370,12 +377,50 @@ def test_query_list_is_wellformed() -> None:
 
 def test_no_year_of_study_in_shipped_config_or_templates() -> None:
     forbidden_keys = ("grad_year", "graduation_year", "year_of_study", "sgpa =", "cgpa =")
-    config_text = (ROOT / "config.toml").read_text(encoding="utf-8").lower()
+    config_text = EXAMPLE_CONFIG.read_text(encoding="utf-8").lower()
     for key in forbidden_keys:
-        assert key not in config_text, f"config.toml declares {key!r}"
+        assert key not in config_text, f"config.example.toml declares {key!r}"
     for path in (ROOT / "outreach_templates.toml", ROOT / "README.md"):
         if not path.exists():
             continue
         text = path.read_text(encoding="utf-8").lower()
         for phrase in ("year of study", "graduation year", "sgpa", "cgpa", "b.tech", "university"):
             assert phrase not in text, f"{path.name} leaked {phrase!r}"
+
+
+def test_example_config_ships_placeholders_only() -> None:
+    """A fresh clone must get a working config, carrying nobody's real identity.
+
+    Enforced structurally rather than by naming any one person's handles: the
+    identity fields we ship must look like placeholders.
+    """
+    assert EXAMPLE_CONFIG.exists(), "config.example.toml missing"
+    loaded = config_module.load(EXAMPLE_CONFIG)
+    for section in ("account", "run", "paths", "profile", "scoring", "queries", "selectors"):
+        assert loaded.section(section), f"config.example.toml is missing [{section}]"
+    for key in ("portfolio", "github"):
+        value = str(loaded.get("profile", key, "")).lower()
+        assert value, f"[profile] {key} must be set"
+        assert "your-" in value or "example" in value, (
+            f"[profile] {key} = {value!r} looks like a real identity; "
+            "config.example.toml must ship placeholders only"
+        )
+    headline = str(loaded.get("profile", "headline", ""))
+    assert headline, "[profile] headline must be set"
+    # A role, not a year. Also catches phone numbers and cohort dates.
+    assert not any(char.isdigit() for char in headline), (
+        f"[profile] headline = {headline!r} contains a digit and likely discloses a detail"
+    )
+
+
+def test_templates_do_not_shadow_profile_identity() -> None:
+    """{headline}/{portfolio} come from [profile]; top-level copies silently drift."""
+    raw = (ROOT / "outreach_templates.toml").read_text(encoding="utf-8").lower()
+    for line in raw.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(("headline", "portfolio")) and "=" in stripped:
+            key = stripped.split("=", 1)[0].strip()
+            raise AssertionError(
+                f"outreach_templates.toml sets a top-level {key!r}; it is never read - "
+                "{headline}/{portfolio} are filled from [profile] in config.toml"
+            )

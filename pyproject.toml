@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xmaxxing"
+version = "0.2.0"
+description = "Find AI/ML and software openings posted on X, score them against your profile, and review the outreach before it goes out."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+# Playwright and the stdlib, nothing else. The dashboard is ThreadingHTTPServer
+# and SSE on purpose so installing this does not drag in a web framework.
+dependencies = ["playwright>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+xmaxxing = "xmaxxing.cli:main"
+
+[tool.setuptools]
+packages = ["xmaxxing", "xmaxxing.assets"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
